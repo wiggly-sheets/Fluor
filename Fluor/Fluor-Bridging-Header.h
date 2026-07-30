@@ -7,4 +7,3 @@
 //
 
 #include "LaunchAtLoginController.h"
-#include "PFMoveApplication.h"

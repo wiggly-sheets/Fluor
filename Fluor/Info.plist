@@ -51,6 +51,8 @@
 			<dict/>
 		</dict>
 	</array>
+	<key>NSSupportsAutomaticTermination</key>
+	<true/>
 	<key>NSSupportsAutomaticGraphicsSwitching</key>
 	<false/>
 	<key>SUFeedURL</key>

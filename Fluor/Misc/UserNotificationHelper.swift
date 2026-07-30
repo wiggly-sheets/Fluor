@@ -132,7 +132,7 @@ enum UserNotificationHelper {
                 if result == .alertFirstButtonReturn {
                     UNUserNotificationCenter.current().requestAuthorization(options: .alert) { (isAuthorized, err) in
                         DispatchQueue.main.async {
-                            if let error = err, isAuthorized {
+                            if let error = err, !isAuthorized {
                                 AppErrorManager.showError(withReason: error.localizedDescription)
                             }
                             if isAuthorized {
@@ -185,7 +185,7 @@ enum UserNotificationHelper {
                     guard result == .alertFirstButtonReturn else { return action(false) }
                     UNUserNotificationCenter.current().requestAuthorization(options: .alert) { (isAuthorized, err) in
                         DispatchQueue.main.async {
-                            if let error = err, isAuthorized {
+                            if let error = err, !isAuthorized {
                                 AppErrorManager.showError(withReason: error.localizedDescription)
                             }
                             action(isAuthorized)
@@ -244,4 +244,3 @@ enum UserNotificationHelper {
         return avc
     }
 }
-

@@ -35,7 +35,7 @@ class StatusMenuController: NSObject, NSMenuDelegate, NSWindowDelegate, MenuCont
     @IBOutlet weak var statusMenu: NSMenu!
     @IBOutlet var menuItemsController: MenuItemsController!
     @IBOutlet var behaviorController: BehaviorController!
-    
+
     private var rulesController: RulesEditorWindowController?
     private var aboutController: AboutWindowController?
     private var preferencesController: PreferencesWindowController?
@@ -84,22 +84,35 @@ class StatusMenuController: NSObject, NSMenuDelegate, NSWindowDelegate, MenuCont
     /// Setup the status bar's item
     private func setupStatusMenu() {
         self.statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
-        
+
+        // Tahoe persists visibility for unnamed items under generic names such
+        // as "Item-0". If another anonymous item has been hidden, Fluor then
+        // inherits that hidden state and Control Center removes it immediately.
+        // Give Fluor its own identity before configuring the item.
+        self.statusItem.autosaveName = "FluorStatusItemTahoe"
+        self.statusItem.isVisible = true
         self.statusItem.menu = statusMenu
         adaptStatusMenuIcon()
     }
     
-    
+    func setStatusImage(_ image: NSImage) {
+        statusItem.button?.title = ""
+        statusItem.button?.image = image
+        statusItem.button?.toolTip = "Fluor"
+    }
+
     /// Adapt status bar icon from user's settings.
     private func adaptStatusMenuIcon() {
         let disabledApp = AppManager.default.isDisabled
         let usesLightIcon = AppManager.default.useLightIcon
+        let image: NSImage
         switch (disabledApp, usesLightIcon) {
-        case (false, false): statusItem.image = #imageLiteral(resourceName: "IconAppleMode")
-        case (false, true): statusItem.image = #imageLiteral(resourceName: "AppleMode")
-        case (true, false): statusItem.image = #imageLiteral(resourceName: "IconDisabled")
-        case (true, true): statusItem.image = #imageLiteral(resourceName: "LighIconDisabled")
+        case (false, false): image = #imageLiteral(resourceName: "IconAppleMode")
+        case (false, true): image = #imageLiteral(resourceName: "AppleMode")
+        case (true, false): image = #imageLiteral(resourceName: "IconDisabled")
+        case (true, true): image = #imageLiteral(resourceName: "LighIconDisabled")
         }
+        setStatusImage(image)
     }
     
     /// Register self as an observer for some notifications.
@@ -200,11 +213,11 @@ class StatusMenuController: NSObject, NSMenuDelegate, NSWindowDelegate, MenuCont
     @IBAction func toggleApplicationState(_ sender: NSMenuItem) {
         let disabled = sender.state == .off
         if disabled {
-            self.statusItem.image = AppManager.default.useLightIcon ? #imageLiteral(resourceName: "LighIconDisabled") : #imageLiteral(resourceName: "IconDisabled")
+            setStatusImage(AppManager.default.useLightIcon ? #imageLiteral(resourceName: "LighIconDisabled") : #imageLiteral(resourceName: "IconDisabled"))
         } else {
-            self.statusItem.image = AppManager.default.useLightIcon ? #imageLiteral(resourceName: "AppleMode") : #imageLiteral(resourceName: "IconAppleMode")
+            setStatusImage(AppManager.default.useLightIcon ? #imageLiteral(resourceName: "AppleMode") : #imageLiteral(resourceName: "IconAppleMode"))
         }
-        self.behaviorController.setApplicationIsEnabled(disabled)
+        self.behaviorController.setApplicationIsEnabled(!disabled)
     }
     
     /// Terminate the application.

@@ -1,6 +1,20 @@
 
 # This README is out-of-date 
 
+## macOS Tahoe compatibility
+
+This fork restores function/media-key switching on macOS 26. Tahoe denies
+Fluor's original `IOHIDSystem` user-client connection, so modern macOS releases
+now update `com.apple.keyboard.fnState` and ask macOS to apply the keyboard
+setting. The original IOKit implementation remains available for macOS 11 and
+12.
+
+The abandoned Sparkle updater has been removed, and the project builds with
+Xcode 26 for both Apple Silicon and Intel. A local build is ad-hoc signed; after
+copying it to Applications, macOS may require it to be opened once through
+Finder's **Open** command. Accessibility permission is only required for the
+optional Fn-key trigger.
+
 [![Swift](https://img.shields.io/badge/Swift-4.0-orange.svg?style=flat)](https://developer.apple.com/swift/)
 ![version](https://img.shields.io/badge/macOS-10.11+-green.svg?style=flat)
 [![License](https://img.shields.io/badge/license-MIT-71787A.svg)](https://tldrlegal.com/license/mit-license)

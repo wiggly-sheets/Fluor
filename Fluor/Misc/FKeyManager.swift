@@ -30,39 +30,122 @@
 enum FKeyManager {
     typealias FKeyManagerResult = Result<FKeyMode, Error>
     
-    enum FKeyManagerError: Error {
+    enum FKeyManagerError: LocalizedError {
         case cannotCreateMasterPort
+        case cannotFindService
         case cannotOpenService
         case cannotSetParameter
         case cannotGetParameter
-        
-        case otherError
-        
-        var localizedDescription: String {
+        case cannotApplyPreferences
+        case parameterDidNotChange
+
+        var errorDescription: String? {
             switch self {
             case .cannotCreateMasterPort:
                 return "Master port creation failed (E1)"
+            case .cannotFindService:
+                return "IOHIDSystem service was not found (E2)"
             case .cannotOpenService:
-                return "Service opening failed (E2)"
+                return "Service opening failed (E3)"
             case .cannotSetParameter:
-                return "Parameter set not possible (E3)"
+                return "Function-key mode could not be set (E4)"
             case .cannotGetParameter:
-                return "Parameter read not possible (E4)"
-            default:
-                return "Unknown error (E99)"
+                return "Function-key mode could not be read (E5)"
+            case .cannotApplyPreferences:
+                return "The macOS keyboard preference could not be applied (E6)"
+            case .parameterDidNotChange:
+                return "macOS accepted the function-key request but the mode did not change (E7)"
             }
         }
     }
     
     static func setCurrentFKeyMode(_ mode: FKeyMode) throws {
+        if #available(macOS 13.0, *) {
+            try setCurrentFKeyModeViaPreferences(mode)
+            return
+        }
+
         let connect = try FKeyManager.getServiceConnect()
+        defer { IOServiceClose(connect) }
         let value = mode.rawValue as CFNumber
-        
+
         guard IOHIDSetCFTypeParameter(connect, kIOHIDFKeyModeKey as CFString, value) == KERN_SUCCESS else {
             throw FKeyManagerError.cannotSetParameter
         }
-        
-        IOServiceClose(connect)
+
+        guard try getCurrentFKeyMode().get() == mode else {
+            throw FKeyManagerError.parameterDidNotChange
+        }
+    }
+
+    /// Modern macOS no longer permits third-party processes to open the
+    /// IOHIDSystem parameter user client. Update the global keyboard preference
+    /// and ask macOS to apply it through its settings activation service.
+    private static func setCurrentFKeyModeViaPreferences(_ mode: FKeyMode) throws {
+        let originalMode = try getCurrentFKeyMode().get()
+        setFunctionKeyPreference(mode)
+
+        do {
+            try applySystemSettings()
+            guard waitForCurrentFKeyMode(mode) else {
+                throw FKeyManagerError.parameterDidNotChange
+            }
+        } catch {
+            setFunctionKeyPreference(originalMode)
+            try? applySystemSettings()
+            throw error
+        }
+    }
+
+    private static func waitForCurrentFKeyMode(
+        _ mode: FKeyMode,
+        timeout: TimeInterval = 2.0
+    ) -> Bool {
+        let deadline = Date().addingTimeInterval(timeout)
+        repeat {
+            if (try? getCurrentFKeyMode().get()) == mode {
+                return true
+            }
+            Thread.sleep(forTimeInterval: 0.05)
+        } while Date() < deadline
+        return false
+    }
+
+    private static func setFunctionKeyPreference(_ mode: FKeyMode) {
+        let enabled = mode == .function ? kCFBooleanTrue : kCFBooleanFalse
+        CFPreferencesSetValue(
+            "com.apple.keyboard.fnState" as CFString,
+            enabled,
+            kCFPreferencesAnyApplication,
+            kCFPreferencesCurrentUser,
+            kCFPreferencesAnyHost
+        )
+        CFPreferencesSynchronize(
+            kCFPreferencesAnyApplication,
+            kCFPreferencesCurrentUser,
+            kCFPreferencesAnyHost
+        )
+    }
+
+    private static func applySystemSettings() throws {
+        let process = Process()
+        process.executableURL = URL(
+            fileURLWithPath: "/System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings"
+        )
+        process.arguments = ["-u"]
+        process.standardOutput = FileHandle.nullDevice
+        process.standardError = FileHandle.nullDevice
+
+        do {
+            try process.run()
+            process.waitUntilExit()
+        } catch {
+            throw FKeyManagerError.cannotApplyPreferences
+        }
+
+        guard process.terminationStatus == 0 else {
+            throw FKeyManagerError.cannotApplyPreferences
+        }
     }
     
     static func getCurrentFKeyMode() -> FKeyManagerResult {
@@ -70,9 +153,16 @@ enum FKeyManager {
             let ri = try self.getIORegistry()
             defer { IOObjectRelease(ri) }
             
-            let entry = IORegistryEntryCreateCFProperty(ri, "HIDParameters" as CFString, kCFAllocatorDefault, 0).autorelease()
-            
-            guard let dict = entry.takeUnretainedValue() as? NSDictionary,
+            guard let entry = IORegistryEntryCreateCFProperty(
+                ri,
+                "HIDParameters" as CFString,
+                kCFAllocatorDefault,
+                0
+            ) else {
+                throw FKeyManagerError.cannotGetParameter
+            }
+
+            guard let dict = entry.takeRetainedValue() as? NSDictionary,
                 let mode = dict.value(forKey: "HIDFKeyMode") as? Int,
                 let currentMode = FKeyMode(rawValue: mode) else {
                     throw FKeyManagerError.cannotGetParameter
@@ -86,7 +176,9 @@ enum FKeyManager {
         var masterPort: mach_port_t = .zero
         guard IOMasterPort(bootstrap_port, &masterPort) == KERN_SUCCESS else { throw FKeyManagerError.cannotCreateMasterPort }
         
-        return IORegistryEntryFromPath(masterPort, "IOService:/IOResources/IOHIDSystem")
+        let entry = IORegistryEntryFromPath(masterPort, "IOService:/IOResources/IOHIDSystem")
+        guard entry != IO_OBJECT_NULL else { throw FKeyManagerError.cannotFindService }
+        return entry
     }
     
     private static func getIOHandle() throws -> io_service_t {

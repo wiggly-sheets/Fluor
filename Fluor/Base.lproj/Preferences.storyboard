@@ -39,7 +39,6 @@
                         <tabViewItem label="General" identifier="general_tab" image="NSPreferencesGeneral" id="Hob-Dv-Dm7"/>
                         <tabViewItem label="Notifications" identifier="notification_tab" image="NSInfo" id="hM9-Ia-nxv"/>
                         <tabViewItem label="Advanced" identifier="advanced_tab" image="NSAdvanced" id="18q-Zg-Tl1"/>
-                        <tabViewItem label="Updates" identifier="updates_tab" image="NSNetwork" id="dHq-vD-kde"/>
                     </tabViewItems>
                     <viewControllerTransitionOptions key="transitionOptions" allowUserInteraction="YES"/>
                     <tabView key="tabView" drawsBackground="NO" type="noTabsNoBorder" id="74u-gV-eCB">
@@ -55,7 +54,6 @@
                         <segue destination="bdY-l4-Nw7" kind="relationship" relationship="tabItems" id="vU4-rd-oIX"/>
                         <segue destination="qEK-qg-cnW" kind="relationship" relationship="tabItems" id="R7Y-LJ-AmD"/>
                         <segue destination="UoT-kw-xfb" kind="relationship" relationship="tabItems" id="wRt-Fo-0fY"/>
-                        <segue destination="dlC-Ac-YKV" kind="relationship" relationship="tabItems" id="YgV-xl-9Rw"/>
                     </connections>
                 </tabViewController>
                 <customObject id="N1Y-oQ-rKI" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
@@ -220,7 +218,6 @@
                 </viewController>
                 <customObject id="xpC-Av-Pb6" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
                 <customObject id="eCo-0m-X2M" customClass="LaunchAtLoginController"/>
-                <customObject id="YAM-vM-LLT" customClass="SUUpdater"/>
                 <userDefaultsController representsSharedInstance="YES" id="XlE-y8-iHG"/>
             </objects>
             <point key="canvasLocation" x="772" y="96"/>
@@ -532,7 +529,7 @@
                     </view>
                 </viewController>
                 <customObject id="uno-mT-3BM" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
-                <customObject id="AeM-5q-gZ3" customClass="SUUpdater"/>
+                <customObject id="AeM-5q-gZ3" customClass="NSObject"/>
             </objects>
             <point key="canvasLocation" x="772" y="783"/>
         </scene>

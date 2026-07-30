@@ -23,6 +23,7 @@
 //  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #import "LaunchAtLoginController.h"
+@import ServiceManagement;
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
@@ -53,6 +54,31 @@ void sharedFileListDidChange(LSSharedFileListRef inList, void *context)
     loginItems = LSSharedFileListCreate(NULL, kLSSharedFileListSessionLoginItems, NULL);
     LSSharedFileListAddObserver(loginItems, CFRunLoopGetMain(),
                                 (CFStringRef)NSDefaultRunLoopMode, sharedFileListDidChange, (voidPtr)CFBridgingRetain(self));
+
+    // LSSharedFileList stores the absolute URL that was current when the item
+    // was added. Fluor's Tahoe test builds could therefore leave an enabled
+    // login item pointing into /private/tmp even after the app was installed.
+    // Migrate an enabled entry once so ServiceManagement records this bundle's
+    // current installed location.
+    if (@available(macOS 13.0, *)) {
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            NSUserDefaults *defaults = NSUserDefaults.standardUserDefaults;
+            NSString *migrationKey = @"DidMigrateLaunchAtLoginToSMAppService";
+            SMAppService *service = SMAppService.mainAppService;
+
+            if (![defaults boolForKey:migrationKey] &&
+                service.status == SMAppServiceStatusEnabled) {
+                NSError *error = nil;
+                if ([service unregisterAndReturnError:&error] &&
+                    [service registerAndReturnError:&error]) {
+                    [defaults setBool:YES forKey:migrationKey];
+                } else {
+                    NSLog(@"Unable to migrate Fluor's login item: %@", error.localizedDescription);
+                }
+            }
+        });
+    }
     return self;
 }
 
@@ -115,12 +141,35 @@ LSSharedFileListItemRef copyItemWithURLinFileList(NSURL* wantedURL, LSSharedFile
 - (void) setLaunchAtLogin: (BOOL) enabled
 {
     [self willChangeValueForKey:StartAtLoginKey];
-    [self setLaunchAtLogin:enabled forURL:[self appURL]];
+
+    if (@available(macOS 13.0, *)) {
+        SMAppService *service = SMAppService.mainAppService;
+        NSError *error = nil;
+
+        if (enabled) {
+            if (service.status == SMAppServiceStatusRequiresApproval) {
+                [SMAppService openSystemSettingsLoginItems];
+            } else if (service.status != SMAppServiceStatusEnabled &&
+                       ![service registerAndReturnError:&error]) {
+                NSLog(@"Unable to enable launch at login: %@", error.localizedDescription);
+            }
+        } else if (service.status != SMAppServiceStatusNotRegistered &&
+                   ![service unregisterAndReturnError:&error]) {
+            NSLog(@"Unable to disable launch at login: %@", error.localizedDescription);
+        }
+    } else {
+        [self setLaunchAtLogin:enabled forURL:[self appURL]];
+    }
+
     [self didChangeValueForKey:StartAtLoginKey];
 }
 
 - (BOOL) launchAtLogin
 {
+    if (@available(macOS 13.0, *)) {
+        return SMAppService.mainAppService.status == SMAppServiceStatusEnabled;
+    }
+
     return [self willLaunchAtLogin:[self appURL]];
 }
 

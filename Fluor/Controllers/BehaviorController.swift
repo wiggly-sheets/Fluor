@@ -74,7 +74,7 @@ class BehaviorController: NSObject, BehaviorDidChangeObserver, DefaultModeViewCo
             self.adaptModeForApp(withId: self.currentAppID)
         } else {
             do { try FKeyManager.setCurrentFKeyMode(self.onLaunchKeyboardMode) }
-            catch { AppErrorManager.terminateApp(withReason: error.localizedDescription) }
+            catch { AppErrorManager.showError(withReason: error.localizedDescription) }
         }
     }
     
@@ -88,7 +88,7 @@ class BehaviorController: NSObject, BehaviorDidChangeObserver, DefaultModeViewCo
             }
             
             do { try FKeyManager.setCurrentFKeyMode(state) }
-            catch { fatalError() }
+            catch { os_log("Unable to restore FKey mode on quit: %@", type: .error, error.localizedDescription) }
         }
     }
     
@@ -140,8 +140,10 @@ class BehaviorController: NSObject, BehaviorDidChangeObserver, DefaultModeViewCo
             self.adaptModeForApp(withId: self.currentAppID)
         case .key:
             self.stopObservingBehaviorDidChange()
-            self.currentMode = AppManager.default.defaultFKeyMode
-            self.changeKeyboard(mode: currentMode)
+            let mode = AppManager.default.defaultFKeyMode
+            if self.changeKeyboard(mode: mode) {
+                self.currentMode = mode
+            }
         }
     }
     
@@ -152,8 +154,9 @@ class BehaviorController: NSObject, BehaviorDidChangeObserver, DefaultModeViewCo
         case .window, .hybrid:
             self.adaptModeForApp(withId: self.currentAppID)
         case .key:
-            self.changeKeyboard(mode: mode)
-            self.currentMode = mode
+            if self.changeKeyboard(mode: mode) {
+                self.currentMode = mode
+            }
         }
     }
     
@@ -203,24 +206,31 @@ class BehaviorController: NSObject, BehaviorDidChangeObserver, DefaultModeViewCo
         let behavior = AppManager.default.behaviorForApp(id: id)
         let mode = AppManager.default.keyboardStateFor(behavior: behavior)
         guard mode != self.currentMode else { return }
-        self.currentMode = mode
-        self.changeKeyboard(mode: mode)
-}
+        if self.changeKeyboard(mode: mode) {
+            self.currentMode = mode
+        }
+    }
     
-    private func changeKeyboard(mode: FKeyMode) {
+    @discardableResult
+    private func changeKeyboard(mode: FKeyMode) -> Bool {
         do { try FKeyManager.setCurrentFKeyMode(mode) }
-        catch { AppErrorManager.terminateApp(withReason: error.localizedDescription) }
+        catch {
+            os_log("Unable to change FKey mode: %@", type: .error, error.localizedDescription)
+            AppErrorManager.showError(withReason: error.localizedDescription)
+            return false
+        }
         
         switch mode {
         case .media:
             os_log("Switch to Apple Mode for %@", self.currentAppID)
-            self.statusMenuController.statusItem.image = AppManager.default.useLightIcon ? #imageLiteral(resourceName: "AppleMode") : #imageLiteral(resourceName: "IconAppleMode") 
+            self.statusMenuController.setStatusImage(AppManager.default.useLightIcon ? #imageLiteral(resourceName: "AppleMode") : #imageLiteral(resourceName: "IconAppleMode"))
         case .function:
             NSLog("Switch to Other Mode for %@", self.currentAppID)
-            self.statusMenuController.statusItem.image = AppManager.default.useLightIcon ? #imageLiteral(resourceName: "OtherMode") : #imageLiteral(resourceName: "IconOtherMode")
+            self.statusMenuController.setStatusImage(AppManager.default.useLightIcon ? #imageLiteral(resourceName: "OtherMode") : #imageLiteral(resourceName: "IconOtherMode"))
         }
         
         UserNotificationHelper.sendModeChangedTo(mode)
+        return true
     }
     
     private func manageKeyPress(event: NSEvent) {
@@ -258,11 +268,14 @@ class BehaviorController: NSObject, BehaviorDidChangeObserver, DefaultModeViewCo
     
     private func fnKeyPressedImpactsGlobal() {
         let mode = self.currentMode.counterPart
-        AppManager.default.defaultFKeyMode = mode
         UserNotificationHelper.holdNextModeChangedNotification = true
-        self.changeKeyboard(mode: mode)
-        self.currentMode = mode
-        UserNotificationHelper.sendGlobalModeChangedTo(mode)
+        if self.changeKeyboard(mode: mode) {
+            AppManager.default.defaultFKeyMode = mode
+            self.currentMode = mode
+            UserNotificationHelper.sendGlobalModeChangedTo(mode)
+        } else {
+            UserNotificationHelper.holdNextModeChangedNotification = false
+        }
     }
     
     private func fnKeyPressedImpactsApp() {
