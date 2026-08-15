@@ -39,6 +39,7 @@ class SwitchMethodViewController: NSViewController, MenuControlPoster, SwitchMet
     }
     
     @IBAction func askAccessibilityPersmission(_ sender: Any) {
+        guard !AXIsProcessTrusted() else { return }
         self.postMenuNeedsToCloseNotification()
         let options : NSDictionary = [kAXTrustedCheckOptionPrompt.takeRetainedValue(): true]
         AXIsProcessTrustedWithOptions(options)

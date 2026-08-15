@@ -81,7 +81,7 @@
             <point key="canvasLocation" x="176.5" y="-514.5"/>
         </customView>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
-        <customObject id="08K-lI-3Rh" customClass="LaunchAtLoginController"/>
+        <customObject id="08K-lI-3Rh" customClass="LaunchAtLoginController" customModule="Fluor" customModuleProvider="target"/>
         <customObject id="fv7-LX-Zyw" customClass="MenuItemsController" customModule="Fluor" customModuleProvider="target">
             <connections>
                 <outlet property="currentAppViewController" destination="zaP-Cz-6tR" id="9Vm-uy-K6G"/>
@@ -126,6 +126,17 @@
                     <modifierMask key="keyEquivalentModifierMask"/>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" tag="4" id="Xdx-op-wZZ"/>
+                <menuItem title="Toggle Function/Media Keys" id="Q1f-rE-0QS">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="toggleKeyboardMode:" target="-2" id="5lK-pU-fzU"/>
+                        <binding destination="TM7-Ze-uQz" name="enabled" keyPath="values.OnLaunchDisabled" id="wC9-84-IaJ">
+                            <dictionary key="options">
+                                <string key="NSValueTransformerName">NSNegateBoolean</string>
+                            </dictionary>
+                        </binding>
+                    </connections>
+                </menuItem>
                 <menuItem title="Current application" tag="5" enabled="NO" id="ulH-vE-QEF">
                     <modifierMask key="keyEquivalentModifierMask"/>
                 </menuItem>
@@ -153,7 +164,7 @@
                     </connections>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="AyI-Ds-a1s"/>
-                <menuItem title="Preferences..." image="Preferences" keyEquivalent="," id="sjb-Ql-h6c">
+                <menuItem title="Settings..." image="Preferences" keyEquivalent="," id="sjb-Ql-h6c">
                     <connections>
                         <action selector="showPreferences:" target="-2" id="3w8-7W-jxA"/>
                     </connections>
@@ -162,6 +173,12 @@
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <binding destination="08K-lI-3Rh" name="value" keyPath="self.launchAtLogin" id="heU-8m-SR5"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Hide menu bar item" onStateImage="CheckEnabled" offStateImage="CheckDisabled" mixedStateImage="CheckMixed" id="HID-MB-ITEM" customClass="CheckableMenuItem" customModule="Fluor" customModuleProvider="target">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <binding destination="TM7-Ze-uQz" name="value" keyPath="values.HideMenuBarItem" id="HID-MB-BIND"/>
                     </connections>
                 </menuItem>
                 <menuItem title="Disabled" onStateImage="CheckEnabled" offStateImage="CheckDisabled" mixedStateImage="CheckMixed" id="DqN-qz-yQz" customClass="CheckableMenuItem" customModule="Fluor" customModuleProvider="target">

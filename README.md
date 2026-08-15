@@ -1,83 +1,115 @@
+<div align="center">
 
-# This README is out-of-date 
+  <img src="Fluor/Assets.xcassets/AppIcon.appiconset/512.png" width="128" alt="Fluor app icon" />
 
-## macOS Tahoe compatibility
+  <h1>Fluor</h1>
 
-This fork restores function/media-key switching on macOS 26. Tahoe denies
-Fluor's original `IOHIDSystem` user-client connection, so modern macOS releases
-now update `com.apple.keyboard.fnState` and ask macOS to apply the keyboard
-setting. The original IOKit implementation remains available for macOS 11 and
-12.
+  <p><strong>Make your Mac’s function keys fit the app you’re using.</strong></p>
 
-The abandoned Sparkle updater has been removed, and the project builds with
-Xcode 26 for both Apple Silicon and Intel. A local build is ad-hoc signed; after
-copying it to Applications, macOS may require it to be opened once through
-Finder's **Open** command. Accessibility permission is only required for the
-optional Fn-key trigger.
+  <p>
+    A small, open-source menu bar utility for switching between media keys and<br />
+    standard F1–F12 keys—automatically, per app, or with a shortcut.
+  </p>
 
-[![Swift](https://img.shields.io/badge/Swift-4.0-orange.svg?style=flat)](https://developer.apple.com/swift/)
-![version](https://img.shields.io/badge/macOS-10.11+-green.svg?style=flat)
-[![License](https://img.shields.io/badge/license-MIT-71787A.svg)](https://tldrlegal.com/license/mit-license)
+  <p>
+    <img src="https://img.shields.io/badge/macOS-26%2B-000000?style=flat&logo=apple&logoColor=white" alt="macOS 26 or later" />
+    <a href="https://developer.apple.com/xcode/swift/"><img src="https://img.shields.io/badge/Swift-5.0-F05138?style=flat&logo=swift&logoColor=white" alt="Swift" /></a>
+    <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-71787A?style=flat" alt="MIT License" /></a>
+  </p>
 
+  <p>
+    <a href="https://github.com/wiggly-sheets/fluor/releases/latest"><strong>Download</strong></a>
+    &nbsp;·&nbsp;
+    <a href="#how-it-works">How it works</a>
+    &nbsp;·&nbsp;
+    <a href="#macos-26">macOS 26</a>
+    &nbsp;·&nbsp;
+    <a href="#open-source">Contribute</a>
+  </p>
 
-![](https://github.com/Pyroh/Fluor/blob/master/ressources/banner.png?raw=true)
+  <img src="resources/banner.png" width="720" alt="Fluor" />
 
-> Want to know how **Fluor** development is going ? [**Follow me on Twitter**](https://twitter.com/__pyroh).
+</div>
 
-# What is Fluor ?
-**Fluor** is a tool that allows you to automatically change the behavior of the keyboard's fn keys depending on the active application. It's that simple.
+---
 
-# Instaling Fluor
-There's two main ways to install **Fluor**:
+Fluor keeps the top row of your keyboard in the mode that makes sense for the app in front of you. Use media controls everywhere, use F1–F12 everywhere, or let Fluor choose on an app-by-app basis.
 
-1. Download the [latest release](https://github.com/Pyroh/Fluor/releases), open the DMG and drag the application to your `/Applications` folder.
-2. Install via [Homebrew Cask](https://caskroom.github.io):  
-`$ brew cask install fluor`
+## Features
 
-You can also build it from source, but this is not recommended if your are only going to use **Fluor** in the regular way, and not hack it. 
+- **Two keyboard modes** — switch between media-key behavior and standard function keys.
+- **Per-app rules** — give an app its own behavior, while unconfigured apps follow your default.
+- **A clear menu bar indicator** — see the active mode at a glance and change it from the menu.
+- **Configurable global shortcut** — toggle modes from any app. The default shortcut is <kbd>⌃⌥⌘F</kbd>, and it can be replaced or cleared in **Settings → General**.
+- **Flexible triggering** — switch by active window, the Fn key, or a hybrid of both.
+- **Lightweight controls** — configure launch at login, notifications, menu-bar appearance, and whether the menu-bar item is shown.
 
-# How does it work?
-<img src="https://github.com/Pyroh/Fluor/blob/master/ressources/statusbar.png?raw=true" width=327pt>
+## How it works
 
-**Fluor** lies in your status bar and makes you see instantaneously which mode your keyboard is on:
+<div align="center">
+  <img src="resources/statusbar.png" width="327" alt="Fluor’s menu bar indicator" />
+</div>
 
-- <img src="https://github.com/Pyroh/Fluor/blob/master/Fluor/Assets.xcassets/iconAppleModeTemplate.imageset/iconAppleModeTemplate@2x.png?raw=true" width=16pt> means that the keyboard's fn keys act like the default Apple function keys.
-- <img src="https://github.com/Pyroh/Fluor/blob/master/Fluor/Assets.xcassets/iconOtherModeTemplate.imageset/iconOtherModeTemplate@2x.png?raw=true" width=16pt> means that the keyboard's fn keys act like these good old function keys (F1, F2, F3, you got it...).
+Fluor lives in the menu bar. Its icon reflects the current keyboard mode, and its menu lets you change the default behavior, open Settings, edit rules, or temporarily disable Fluor. When disabled, Fluor restores the keyboard behavior it found when it launched.
 
-## Fluor's menu
-This is what you get when you click on **Fluor** in the status bar:
+### Rules
 
-<img src="https://github.com/Pyroh/Fluor/blob/master/ressources/mainmenu.png?raw=true" width=279pt>
+<div align="center">
+  <img src="resources/ruleseditor.png" width="412" alt="Fluor Rules window" />
+</div>
 
-You can choose the default mode. Whenever **Fluor** runs it will activate the default mode for your keyboard's fn keys.
+Rules let you set a mode for an individual app. Add an application, choose its behavior, and Fluor applies it when that app becomes active. Apps without a rule inherit the default mode.
 
-**Fluor** also displays the active application and its associated rule that you can change on the go.  
-<img src="https://github.com/Pyroh/Fluor/blob/master/Fluor/Assets.xcassets/defaultModeTemplate.imageset/defaultModeTemplate@2x.png?raw=true" width=16pt> is the default rule and means that the application will adopt default Fluor's keyboard behaviour.
+For processes that are difficult to select in the Rules window, **Running Applications** lets you create the same rule from the apps currently open on your Mac.
 
-You can also disable **Fluor** if you need to. It will set the keyboard's behaviour as it was prior to the application's launch. 
+<div align="center">
+  <img src="resources/runningapps.png" width="412" alt="Fluor Running Applications window" />
+</div>
 
-## Rules Editor
-<img src="https://github.com/Pyroh/Fluor/blob/master/ressources/ruleseditor.png?raw=true" width=412pt>
+## macOS 26
 
-This panel allows you to see all the rules you set at once. You can modify or delete any rule. Adding a rule will prompt a file selector in which you'll be able to select the application you want to set a rule for.
+Fluor targets macOS 26 and later. It uses the current macOS keyboard preference and asks the system to apply mode changes; the legacy `IOHIDSystem` write path has been removed. Launch at login uses Apple’s native `SMAppService` API.
 
-## Running Applications
-<img src="https://github.com/Pyroh/Fluor/blob/master/ressources/runningapps.png?raw=true" width=412pt>
+The configurable global shortcut requires **Accessibility** permission. Open **Settings → Advanced**, select **Grant Access…**, enable Fluor in System Settings, then return to Fluor. Permission is not required when you only use window-based switching.
 
-Sometimes it is not possible to select an application in the *Rules Editor*, especially for Steam games. This panel lets you set a rule for any running application. Of course the rules you set in this panel will be available directly in the *Rules Editor*. You can also remove a rule by setting the application behaviour to <img src="https://github.com/Pyroh/Fluor/blob/master/Fluor/Assets.xcassets/defaultModeTemplate.imageset/defaultModeTemplate@2x.png?raw=true" width=16pt>, it will also disappear from the *Rules Editor* panel.
+## Install
 
-# Why is it open source ?
-I made **Fluor** because I needed such an application. I wanted it simple, nicely designed and free and I didn't find such a thing on the internet. Once it was done I used it for a little while, cleaned up the code and decided to give it to others for free. What was a requirement for me can well be a requirement for others too.  
-You'd argue that such a non-sandboxed app had no chance to hit the AppStore and you'd be right. But if I had the chance it would have remained free and open-source. I don't think there's many people needing such an app and I prefer seeing it used by a wider range of people.  
+Download the latest `Fluor.dmg` from [GitHub Releases](https://github.com/wiggly-sheets/fluor/releases/latest), open it, and drag Fluor to Applications. The current community build is ad-hoc signed rather than notarized, so on first launch you may need to Control-click Fluor in Finder and choose **Open**.
 
-This app is also built using open-source code, that's why I think it belongs to this world. And if someone learns something looking at the code I'll be happy 😃.
+## Build and install from source
 
-# Contributing
-All contributions are welcome. Fork it, hack it and make a pull request.
+To build and install Fluor yourself, you need:
 
-# License
-**Fluor** is released under the MIT license. See LICENSE for details.
+- macOS 26 or later
+- Xcode 26
+- An Apple Silicon or Intel Mac
 
-Some of [**fntoggle**](https://github.com/nelsonjchen/fntoggle)'s code was used. As its author [wrote](https://github.com/nelsonjchen/fntoggle#license) it could be released under the GPL2 license.
+Clone the repository, open the project, and run the **Fluor** scheme:
 
-The code also uses [**LaunchAtLoginController**](https://github.com/Mozketo/LaunchAtLoginController) which is Copyright (c) 2010 Ben Clark-Robinson, ben.clarkrobinson@gmail.com and is released under the MIT LICENSE.
+```bash
+git clone https://github.com/wiggly-sheets/fluor.git
+cd fluor
+open Fluor.xcodeproj
+```
+
+You can also build from Terminal:
+
+```bash
+xcodebuild -project Fluor.xcodeproj -scheme Fluor -configuration Release build
+```
+
+Copy the resulting `Fluor.app` to `/Applications`. Locally built copies are ad-hoc signed, so macOS may ask you to open the app once with Finder’s **Open** command.
+
+The project builds for Apple Silicon and Intel. In Xcode, select the **Fluor** scheme and press <kbd>⌘R</kbd> to run a Debug build, or use the Release command above. The Sparkle updater has been removed, so updating a locally built copy means rebuilding and replacing the app in `/Applications`.
+
+## Open source
+
+Fluor began as a small utility to make the keyboard behave the way its author needed: simple, thoughtfully designed, free, and useful to anyone with the same need. It remains open source so its behavior can be inspected, improved, and shared.
+
+Contributions are welcome—fork it, hack on it, and open a pull request.
+
+Original Fluor by [Pierre Tacchi (Pyroh)](https://github.com/Pyroh/Fluor).
+
+## License
+
+Fluor is released under the [MIT License](LICENSE).

@@ -33,6 +33,12 @@ import Foundation
 class Release: NSObject, Decodable {
     dynamic let tag: String
     dynamic let url: URL
+
+    private enum CodingKeys: String, CodingKey {
+        case tag = "tag_name"
+        case url = "html_url"
+    }
+
     dynamic var displayName: String {
         return String(format: NSLocalizedString("version %@", comment: ""), tag) 
     }

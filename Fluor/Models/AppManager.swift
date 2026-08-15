@@ -48,6 +48,12 @@ extension UserDefaultsKeyName {
     static let hideNotificationAuthorizationPopup: UserDefaultsKeyName = "hideNotificationAuthorizationPopup"
     static let userNotificationEnablement: UserDefaultsKeyName = "userNotificationEnablement"
     static let sendLegacyUserNotifications: UserDefaultsKeyName = "sendLegacyUserNotification"
+    static let toggleShortcutKeyCode: UserDefaultsKeyName = "ToggleShortcutKeyCode"
+    static let toggleShortcutModifiers: UserDefaultsKeyName = "ToggleShortcutModifiers"
+    static let toggleShortcutDisplay: UserDefaultsKeyName = "ToggleShortcutDisplay"
+    static let migratedTahoePreferences: UserDefaultsKeyName = "MigratedTahoePreferences"
+    static let hideMenuBarItem: UserDefaultsKeyName = "HideMenuBarItem"
+    static let toggleShortcutEnabled: UserDefaultsKeyName = "ToggleShortcutEnabled"
 }
 
 class AppManager: BehaviorDidChangePoster {
@@ -101,13 +107,41 @@ class AppManager: BehaviorDidChangePoster {
     
     @Defaults(key: .sendLegacyUserNotifications, defaultValue: false)
     var sendLegacyUserNotifications: Bool
+
+    @Defaults(key: .toggleShortcutKeyCode, defaultValue: 3)
+    var toggleShortcutKeyCode: Int
+
+    @Defaults(key: .toggleShortcutModifiers, defaultValue: 1_835_008)
+    var toggleShortcutModifiers: Int
+
+    @Defaults(key: .toggleShortcutDisplay, defaultValue: "⌃⌥⌘F")
+    var toggleShortcutDisplay: String
+
+    @Defaults(key: .hideMenuBarItem, defaultValue: false)
+    var hideMenuBarItem: Bool
+
+    @Defaults(key: .toggleShortcutEnabled, defaultValue: true)
+    var toggleShortcutEnabled: Bool
     
     private(set) var rules: Set<Rule> = []
     private var behaviorDict: [String: AppBehavior] = [:]
     private let defaults = UserDefaults.standard
     
     private init() {
+        self.migrateTahoePreferencesIfNeeded()
         self.loadRules()
+    }
+
+    private func migrateTahoePreferencesIfNeeded() {
+        guard !defaults.bool(forKey: UserDefaultsKeyName.migratedTahoePreferences.rawValue) else { return }
+        defer { defaults.set(true, forKey: UserDefaultsKeyName.migratedTahoePreferences.rawValue) }
+
+        guard let legacyDefaults = UserDefaults(suiteName: "com.pyrolyse.FluorTahoe")?.persistentDomain(forName: "com.pyrolyse.FluorTahoe") else { return }
+
+        for (key, value) in legacyDefaults where defaults.object(forKey: key) == nil {
+            defaults.set(value, forKey: key)
+        }
+        defaults.set(true, forKey: UserDefaultsKeyName.migratedTahoePreferences.rawValue)
     }
     
     func propagate(behavior: AppBehavior, forApp id: String, at url: URL, from source: NotificationSource) {

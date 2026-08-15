@@ -58,12 +58,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
         ValueTransformer.setValueTransformer(RuleValueTransformer(), forName: NSValueTransformerName("RuleValueTransformer"))
         
-        if !AXIsProcessTrusted() && !AppManager.default.hasAlreadyAnsweredAccessibility {
-            let options : NSDictionary = [kAXTrustedCheckOptionPrompt.takeRetainedValue(): true]
-            AXIsProcessTrustedWithOptions(options)
-            AppManager.default.hasAlreadyAnsweredAccessibility = true
-        }
-        
         if AppManager.default.lastRunVersion != self.getBundleVersion() {
             AppManager.default.lastRunVersion = self.getBundleVersion()
         }
@@ -71,6 +65,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         UserNotificationHelper.askUserAtLaunch()
         
         self.loadMainMenu()
+    }
+
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+        if !flag {
+            statusMenuController.showPreferencesWindow()
+        }
+        return true
     }
 
     // Do not migrate stale status-item placement from the prior bundle identity.

@@ -19,17 +19,15 @@
 	<key>CFBundleShortVersionString</key>
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
-	<string>2345</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>FLGithubURL</key>
-	<string>https://github.com/Pyroh/Fluor</string>
+	<string>https://github.com/wiggly-sheets/fluor</string>
 	<key>FLPyrolyseURL</key>
 	<string>https://pyrolyse.it</string>
 	<key>FLRNListURL</key>
-	<string>https://resources.pyrolyse.it/releasenotes/Fluor/versions.json</string>
+	<string>https://api.github.com/repos/wiggly-sheets/fluor/releases</string>
 	<key>FLSupportEmail</key>
-	<string>mailto:fluor.support@pyrolyse.it?subject=Fluor%20Issue</string>
-	<key>FLSupportURL</key>
-	<string>https://pyrolyse.it</string>
+	<string>https://github.com/wiggly-sheets/fluor/issues</string>
 	<key>FLTwitterURL</key>
 	<string>https://twitter.com/__pyroh</string>
 	<key>LSApplicationCategoryType</key>
@@ -55,11 +53,5 @@
 	<true/>
 	<key>NSSupportsAutomaticGraphicsSwitching</key>
 	<false/>
-	<key>SUFeedURL</key>
-	<string>https://updates.pyrolyse.co/Fluor/2.0/appcast.xml</string>
-	<key>SUPublicDSAKeyFile</key>
-	<string>dsa_pub.pem</string>
-	<key>SUPublicEDKey</key>
-	<string>2SzTTYB9kulc+kJ8i0YdyKel2RoNIRKrJ8xp/wXWVyk=</string>
 </dict>
 </plist>

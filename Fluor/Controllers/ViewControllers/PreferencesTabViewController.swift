@@ -30,6 +30,12 @@
 import Cocoa
 
 class PreferencesTabViewController: NSTabViewController, TriggerSectionVisibilityDidChangePoster, SwitchMethodDidChangePoster {
+    @IBAction func requestAccessibilityPermission(_ sender: Any) {
+        guard !AXIsProcessTrusted() else { return }
+        let options: NSDictionary = [kAXTrustedCheckOptionPrompt.takeRetainedValue(): true]
+        AXIsProcessTrustedWithOptions(options)
+    }
+
     @IBAction func changeTriggerSectionVisibility(_ sender: NSButton) {
         let visible = sender.state == .off
         if !visible {

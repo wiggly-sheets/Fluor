@@ -27,55 +27,30 @@
 //
 
 
+import Foundation
+
 enum FKeyManager {
     typealias FKeyManagerResult = Result<FKeyMode, Error>
     
     enum FKeyManagerError: LocalizedError {
-        case cannotCreateMasterPort
-        case cannotFindService
-        case cannotOpenService
-        case cannotSetParameter
         case cannotGetParameter
         case cannotApplyPreferences
         case parameterDidNotChange
 
         var errorDescription: String? {
             switch self {
-            case .cannotCreateMasterPort:
-                return "Master port creation failed (E1)"
-            case .cannotFindService:
-                return "IOHIDSystem service was not found (E2)"
-            case .cannotOpenService:
-                return "Service opening failed (E3)"
-            case .cannotSetParameter:
-                return "Function-key mode could not be set (E4)"
             case .cannotGetParameter:
-                return "Function-key mode could not be read (E5)"
+                return "Function-key mode could not be read (E1)"
             case .cannotApplyPreferences:
-                return "The macOS keyboard preference could not be applied (E6)"
+                return "The macOS keyboard preference could not be applied (E2)"
             case .parameterDidNotChange:
-                return "macOS accepted the function-key request but the mode did not change (E7)"
+                return "macOS accepted the function-key request but the mode did not change (E3)"
             }
         }
     }
     
     static func setCurrentFKeyMode(_ mode: FKeyMode) throws {
-        if #available(macOS 13.0, *) {
-            try setCurrentFKeyModeViaPreferences(mode)
-            return
-        }
-
-        let connect = try FKeyManager.getServiceConnect()
-        defer { IOServiceClose(connect) }
-        let value = mode.rawValue as CFNumber
-
-        guard IOHIDSetCFTypeParameter(connect, kIOHIDFKeyModeKey as CFString, value) == KERN_SUCCESS else {
-            throw FKeyManagerError.cannotSetParameter
-        }
-
-        guard try getCurrentFKeyMode().get() == mode else {
-            throw FKeyManagerError.parameterDidNotChange
-        }
+        try setCurrentFKeyModeViaPreferences(mode)
     }
 
     // Modern macOS requires applying the global preference through activateSettings.
@@ -148,50 +123,16 @@ enum FKeyManager {
     
     static func getCurrentFKeyMode() -> FKeyManagerResult {
         FKeyManagerResult {
-            let ri = try self.getIORegistry()
-            defer { IOObjectRelease(ri) }
-            
-            guard let entry = IORegistryEntryCreateCFProperty(
-                ri,
-                "HIDParameters" as CFString,
-                kCFAllocatorDefault,
-                0
-            ) else {
+            guard let enabled = CFPreferencesCopyValue(
+                "com.apple.keyboard.fnState" as CFString,
+                kCFPreferencesAnyApplication,
+                kCFPreferencesCurrentUser,
+                kCFPreferencesAnyHost
+            ) as? Bool else {
                 throw FKeyManagerError.cannotGetParameter
             }
 
-            guard let dict = entry.takeRetainedValue() as? NSDictionary,
-                let mode = dict.value(forKey: "HIDFKeyMode") as? Int,
-                let currentMode = FKeyMode(rawValue: mode) else {
-                    throw FKeyManagerError.cannotGetParameter
-            }
-            
-            return currentMode
+            return enabled ? .function : .media
         }
-    }
-    
-    private static func getIORegistry() throws -> io_registry_entry_t {
-        var masterPort: mach_port_t = .zero
-        guard IOMasterPort(bootstrap_port, &masterPort) == KERN_SUCCESS else { throw FKeyManagerError.cannotCreateMasterPort }
-        
-        let entry = IORegistryEntryFromPath(masterPort, "IOService:/IOResources/IOHIDSystem")
-        guard entry != IO_OBJECT_NULL else { throw FKeyManagerError.cannotFindService }
-        return entry
-    }
-    
-    private static func getIOHandle() throws -> io_service_t {
-        try self.getIORegistry() as io_service_t
-    }
-    
-    private static func getServiceConnect() throws -> io_connect_t {
-        var service: io_connect_t = .zero
-        let handle = try self.getIOHandle()
-        defer { IOObjectRelease(handle) }
-        
-        guard IOServiceOpen(handle, mach_task_self_, UInt32(kIOHIDParamConnectType), &service) == KERN_SUCCESS else {
-            throw FKeyManagerError.cannotOpenService
-        }
-        
-        return service
     }
 }

@@ -80,8 +80,8 @@
 /* Class = "NSTextFieldCell"; title = "Activate the Allow Notification from Fluor switch"; ObjectID = "hv4-f4-B7v"; */
 "hv4-f4-B7v.title" = "Activate the Allow Notification from Fluor switch";
 
-/* Class = "NSButtonCell"; title = "Use light menu icon"; ObjectID = "j3E-2l-1wC"; */
-"j3E-2l-1wC.title" = "使用浅色菜单栏图标";
+/* Class = "NSButtonCell"; title = "Use menu bar icon with background"; ObjectID = "j3E-2l-1wC"; */
+"j3E-2l-1wC.title" = "使用带背景的菜单栏图标";
 
 /* Class = "CocoaBindingsConnection"; ibShadowedIsNilPlaceholder = "280ms"; ObjectID = "kjd-tC-eHL"; */
 "kjd-tC-eHL.ibShadowedIsNilPlaceholder" = "280ms";

@@ -198,7 +198,7 @@ class BehaviorController: NSObject, BehaviorDidChangeObserver, DefaultModeViewCo
         switch mode {
         case .media:
             os_log("Switch to Apple Mode for %@", self.currentAppID)
-            self.statusMenuController.setStatusImage(AppManager.default.useLightIcon ? #imageLiteral(resourceName: "AppleMode") : #imageLiteral(resourceName: "IconAppleMode"))
+            self.statusMenuController.setStatusImage(MediaModeIcon.image(usesBackground: !AppManager.default.useLightIcon))
         case .function:
             NSLog("Switch to Other Mode for %@", self.currentAppID)
             self.statusMenuController.setStatusImage(AppManager.default.useLightIcon ? #imageLiteral(resourceName: "OtherMode") : #imageLiteral(resourceName: "IconOtherMode"))
@@ -209,6 +209,14 @@ class BehaviorController: NSObject, BehaviorDidChangeObserver, DefaultModeViewCo
     }
     
     private func manageKeyPress(event: NSEvent) {
+        if event.type == .keyDown,
+           AppManager.default.toggleShortcutEnabled,
+           Int(event.keyCode) == AppManager.default.toggleShortcutKeyCode,
+           event.modifierFlags.intersection(.deviceIndependentFlagsMask).rawValue == UInt(AppManager.default.toggleShortcutModifiers) {
+            self.toggleKeyboardMode()
+            return
+        }
+
         guard self.switchMethod != .window else { return }
         if event.type == .flagsChanged {
             if event.modifierFlags.contains(.function) {
@@ -238,6 +246,15 @@ class BehaviorController: NSObject, BehaviorDidChangeObserver, DefaultModeViewCo
         } else if self.shouldHandleFNKey {
             self.shouldHandleFNKey = false
             self.fnDownTimestamp = nil
+        }
+    }
+
+    func toggleKeyboardMode() {
+        guard !AppManager.default.isDisabled else { return }
+
+        let mode = self.currentMode.counterPart
+        if self.changeKeyboard(mode: mode) {
+            self.currentMode = mode
         }
     }
     

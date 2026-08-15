@@ -47,11 +47,13 @@ class StatusMenuController: NSObject, NSMenuDelegate, NSWindowDelegate, MenuCont
         self.menuItemsController.setupController()
         self.behaviorController.setupController()
         startObservingUsesLightIcon()
+        startObservingMenuBarVisibility()
         startObservingMenuControlNotification()
     }
     
     deinit {
         stopObservingUsesLightIcon()
+        stopObservingMenuBarVisibility()
         stopObservingSwitchMenuControlNotification()
     }
     
@@ -73,6 +75,8 @@ class StatusMenuController: NSObject, NSMenuDelegate, NSWindowDelegate, MenuCont
         switch keyPath {
         case UserDefaultsKeyName.useLightIcon.rawValue?:
             adaptStatusMenuIcon()
+        case UserDefaultsKeyName.hideMenuBarItem.rawValue?:
+            statusItem.isVisible = !AppManager.default.hideMenuBarItem
         default:
             return
         }
@@ -81,9 +85,9 @@ class StatusMenuController: NSObject, NSMenuDelegate, NSWindowDelegate, MenuCont
     private func setupStatusMenu() {
         self.statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
 
-        // A stable identity prevents Tahoe from inheriting another item's hidden state.
+        // Keep the proven status-item identity; this is independent of the app's user-facing name.
         self.statusItem.autosaveName = "FluorStatusItemTahoe"
-        self.statusItem.isVisible = true
+        self.statusItem.isVisible = !AppManager.default.hideMenuBarItem
         self.statusItem.menu = statusMenu
         adaptStatusMenuIcon()
     }
@@ -99,8 +103,7 @@ class StatusMenuController: NSObject, NSMenuDelegate, NSWindowDelegate, MenuCont
         let usesLightIcon = AppManager.default.useLightIcon
         let image: NSImage
         switch (disabledApp, usesLightIcon) {
-        case (false, false): image = #imageLiteral(resourceName: "IconAppleMode")
-        case (false, true): image = #imageLiteral(resourceName: "AppleMode")
+        case (false, let usesLightIcon): image = MediaModeIcon.image(usesBackground: !usesLightIcon)
         case (true, false): image = #imageLiteral(resourceName: "IconDisabled")
         case (true, true): image = #imageLiteral(resourceName: "LighIconDisabled")
         }
@@ -113,6 +116,14 @@ class StatusMenuController: NSObject, NSMenuDelegate, NSWindowDelegate, MenuCont
     
     private func stopObservingUsesLightIcon() {
         UserDefaults.standard.removeObserver(self, forKeyPath: UserDefaultsKeyName.useLightIcon.rawValue, context: nil)
+    }
+
+    private func startObservingMenuBarVisibility() {
+        UserDefaults.standard.addObserver(self, forKeyPath: UserDefaultsKeyName.hideMenuBarItem.rawValue, options: [], context: nil)
+    }
+
+    private func stopObservingMenuBarVisibility() {
+        UserDefaults.standard.removeObserver(self, forKeyPath: UserDefaultsKeyName.hideMenuBarItem.rawValue, context: nil)
     }
     
     
@@ -157,6 +168,10 @@ class StatusMenuController: NSObject, NSMenuDelegate, NSWindowDelegate, MenuCont
     }
     
     @IBAction func showPreferences(_ sender: AnyObject) {
+        showPreferencesWindow()
+    }
+
+    func showPreferencesWindow() {
         guard preferencesController == nil else {
             preferencesController?.window?.makeKeyAndOrderFront(self)
             preferencesController?.window?.makeMain()
@@ -186,9 +201,13 @@ class StatusMenuController: NSObject, NSMenuDelegate, NSWindowDelegate, MenuCont
         if disabled {
             setStatusImage(AppManager.default.useLightIcon ? #imageLiteral(resourceName: "LighIconDisabled") : #imageLiteral(resourceName: "IconDisabled"))
         } else {
-            setStatusImage(AppManager.default.useLightIcon ? #imageLiteral(resourceName: "AppleMode") : #imageLiteral(resourceName: "IconAppleMode"))
+            setStatusImage(MediaModeIcon.image(usesBackground: !AppManager.default.useLightIcon))
         }
         self.behaviorController.setApplicationIsEnabled(!disabled)
+    }
+
+    @IBAction func toggleKeyboardMode(_ sender: Any?) {
+        self.behaviorController.toggleKeyboardMode()
     }
     
     @IBAction func quitApplication(_ sender: AnyObject) {

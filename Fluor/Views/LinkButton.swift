@@ -28,7 +28,6 @@
 
 
 import Cocoa
-import SmoothOperators
 
 final class LinkButton: NSButton {
     @IBInspectable var url: String?
@@ -75,7 +74,7 @@ final class LinkButton: NSButton {
     }
     
     @IBAction func openURL(_ sender: Any?){
-        guard !!url else { return }
+        guard url != nil else { return }
         guard let destinationURL = actualURL else { return assertionFailure("\(self.url!) is not a valid URL.") }
         NSWorkspace.shared.open(destinationURL)
     }
