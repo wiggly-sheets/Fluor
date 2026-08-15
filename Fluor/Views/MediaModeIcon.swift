@@ -17,8 +17,12 @@ enum MediaModeIcon {
             ).fill()
         }
 
+        let globeOrigin = usesBackground
+            ? NSPoint(x: 1.83, y: 1.83)
+            : NSPoint(x: 1.95, y: 1.7)
+
         globe.draw(
-            in: .init(x: 1.95, y: 1.7, width: 15, height: 15),
+            in: .init(origin: globeOrigin, size: .init(width: 15, height: 15)),
             from: .zero,
             operation: usesBackground ? .destinationOut : .sourceOver,
             fraction: 1,

@@ -28,7 +28,6 @@
 
 
 import Cocoa
-import DefaultsWrapper
 
 class StatusMenuController: NSObject, NSMenuDelegate, NSWindowDelegate, MenuControlObserver {
     @IBOutlet weak var statusMenu: NSMenu!
@@ -73,10 +72,10 @@ class StatusMenuController: NSObject, NSMenuDelegate, NSWindowDelegate, MenuCont
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         switch keyPath {
-        case UserDefaultsKeyName.useLightIcon.rawValue?:
+        case SettingsKey.useLightIcon?:
             adaptStatusMenuIcon()
-        case UserDefaultsKeyName.hideMenuBarItem.rawValue?:
-            statusItem.isVisible = !AppManager.default.hideMenuBarItem
+        case SettingsKey.hideMenuBarItem?:
+            applyMenuBarVisibility()
         default:
             return
         }
@@ -84,18 +83,21 @@ class StatusMenuController: NSObject, NSMenuDelegate, NSWindowDelegate, MenuCont
     
     private func setupStatusMenu() {
         self.statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
-
-        // Keep the proven status-item identity; this is independent of the app's user-facing name.
-        self.statusItem.autosaveName = "FluorStatusItemTahoe"
+        self.statusItem.autosaveName = "FluorStatusItem"
         self.statusItem.isVisible = !AppManager.default.hideMenuBarItem
         self.statusItem.menu = statusMenu
         adaptStatusMenuIcon()
+    }
+
+    private func applyMenuBarVisibility() {
+        statusItem.isVisible = !AppManager.default.hideMenuBarItem
     }
     
     func setStatusImage(_ image: NSImage) {
         statusItem.button?.title = ""
         statusItem.button?.image = image
         statusItem.button?.toolTip = "Fluor"
+        statusItem.button?.setAccessibilityLabel("Fluor")
     }
 
     private func adaptStatusMenuIcon() {
@@ -111,19 +113,19 @@ class StatusMenuController: NSObject, NSMenuDelegate, NSWindowDelegate, MenuCont
     }
     
     private func startObservingUsesLightIcon() {
-        UserDefaults.standard.addObserver(self, forKeyPath: UserDefaultsKeyName.useLightIcon.rawValue, options: [], context: nil)
+        UserDefaults.standard.addObserver(self, forKeyPath: SettingsKey.useLightIcon, options: [], context: nil)
     }
     
     private func stopObservingUsesLightIcon() {
-        UserDefaults.standard.removeObserver(self, forKeyPath: UserDefaultsKeyName.useLightIcon.rawValue, context: nil)
+        UserDefaults.standard.removeObserver(self, forKeyPath: SettingsKey.useLightIcon, context: nil)
     }
 
     private func startObservingMenuBarVisibility() {
-        UserDefaults.standard.addObserver(self, forKeyPath: UserDefaultsKeyName.hideMenuBarItem.rawValue, options: [], context: nil)
+        UserDefaults.standard.addObserver(self, forKeyPath: SettingsKey.hideMenuBarItem, options: [], context: nil)
     }
 
     private func stopObservingMenuBarVisibility() {
-        UserDefaults.standard.removeObserver(self, forKeyPath: UserDefaultsKeyName.hideMenuBarItem.rawValue, context: nil)
+        UserDefaults.standard.removeObserver(self, forKeyPath: SettingsKey.hideMenuBarItem, context: nil)
     }
     
     

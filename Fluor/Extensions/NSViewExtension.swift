@@ -31,25 +31,17 @@ import Cocoa
 
 extension NSView {
     var isDark: Bool {
-        if #available(OSX 10.14, *) {
-            return effectiveAppearance.bestMatch(from: [.darkAqua,
-                                                        .accessibilityHighContrastDarkAqua,
-                                                        .vibrantDark,
-                                                        .accessibilityHighContrastVibrantDark]) != nil
-        } else {
-            return false
-        }
+        effectiveAppearance.bestMatch(from: [.darkAqua,
+                                             .accessibilityHighContrastDarkAqua,
+                                             .vibrantDark,
+                                             .accessibilityHighContrastVibrantDark]) != nil
     }
     
     var isAccessible: Bool {
-        if #available(OSX 10.14, *) {
-            return effectiveAppearance.bestMatch(from: [.accessibilityHighContrastAqua,
-                                                        .accessibilityHighContrastVibrantLight,
-                                                        .accessibilityHighContrastDarkAqua,
-                                                        .accessibilityHighContrastVibrantDark]) != nil
-        } else {
-            return false
-        }
+        effectiveAppearance.bestMatch(from: [.accessibilityHighContrastAqua,
+                                             .accessibilityHighContrastVibrantLight,
+                                             .accessibilityHighContrastDarkAqua,
+                                             .accessibilityHighContrastVibrantDark]) != nil
     }
     
     func centerLayerAnchor() {
@@ -61,4 +53,3 @@ extension NSView {
         self.layer?.contentsGravity = CALayerContentsGravity.center
     }
 }
-

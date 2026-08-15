@@ -1,6 +1,6 @@
 <div align="center">
 
-  <img src="Fluor/Assets.xcassets/AppIcon.appiconset/512.png" width="128" alt="Fluor app icon" />
+  <img src="resources/app-icon.png" width="128" alt="Fluor app icon" />
 
   <h1>Fluor</h1>
 
@@ -27,7 +27,7 @@
     <a href="#open-source">Contribute</a>
   </p>
 
-  <img src="resources/banner.png" width="720" alt="Fluor" />
+  <img src="resources/banner-v2.png" width="720" alt="Fluor" />
 
 </div>
 

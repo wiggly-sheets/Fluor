@@ -28,99 +28,69 @@
 
 
 import Cocoa
-import DefaultsWrapper
-
-extension UserDefaultsKeyName {
-    static let userHasAlreadyAnsweredAccessibility: UserDefaultsKeyName = "HasAlreadyRefusedAccessibility"
-    static let keyboardMode: UserDefaultsKeyName = "DefaultKeyboardMode"
-    static let appRules: UserDefaultsKeyName = "AppRules"
-    static let restoreStateOnQuit: UserDefaultsKeyName = "ResetModeOnQuit"
-    static let restoreStateAsBeforeStartup: UserDefaultsKeyName = "SameStateAsBeforeStartup"
-    static let onQuitState: UserDefaultsKeyName = "OnQuitState"
-    static let disabledOnLunch: UserDefaultsKeyName = "OnLaunchDisabled"
-    static let switchMethod: UserDefaultsKeyName = "DefaultSwitchMethod"
-    static let useLightIcon: UserDefaultsKeyName = "UseLightIcon"
-    static let showAllRunningProcesses: UserDefaultsKeyName = "ShowAllProcesses"
-    static let fnKeyMaximumDelay: UserDefaultsKeyName = "FNKeyReleaseMaximumDelay"
-    static let lastRunVersion: UserDefaultsKeyName = "LastRunVersion"
-    static let hideSwitchMethod: UserDefaultsKeyName = "HideSwitchMethod"
-    static let sendFnKeyNotification: UserDefaultsKeyName = "sendFnKeyNotification"
-    static let hideNotificationAuthorizationPopup: UserDefaultsKeyName = "hideNotificationAuthorizationPopup"
-    static let userNotificationEnablement: UserDefaultsKeyName = "userNotificationEnablement"
-    static let sendLegacyUserNotifications: UserDefaultsKeyName = "sendLegacyUserNotification"
-    static let toggleShortcutKeyCode: UserDefaultsKeyName = "ToggleShortcutKeyCode"
-    static let toggleShortcutModifiers: UserDefaultsKeyName = "ToggleShortcutModifiers"
-    static let toggleShortcutDisplay: UserDefaultsKeyName = "ToggleShortcutDisplay"
-    static let migratedTahoePreferences: UserDefaultsKeyName = "MigratedTahoePreferences"
-    static let hideMenuBarItem: UserDefaultsKeyName = "HideMenuBarItem"
-    static let toggleShortcutEnabled: UserDefaultsKeyName = "ToggleShortcutEnabled"
-}
 
 class AppManager: BehaviorDidChangePoster {
     
     static let `default`: AppManager = AppManager()
     
-    @Defaults(key: .keyboardMode, defaultValue: .media)
+    @StoredRawDefault(SettingsKey.keyboardMode, default: .media)
     var defaultFKeyMode: FKeyMode
     
-    @Defaults(key: .switchMethod, defaultValue: .window)
+    @StoredRawDefault(SettingsKey.switchMethod, default: .window)
     var switchMethod: SwitchMethod
     
-    @Defaults(key: .hideSwitchMethod, defaultValue: false)
+    @StoredDefault(SettingsKey.hideSwitchMethod, default: false)
     var hideSwitchMethod: Bool
     
-    @Defaults(key: .lastRunVersion, defaultValue: "unknown")
+    @StoredDefault(SettingsKey.lastRunVersion, default: "unknown")
     var lastRunVersion: String
     
-    @Defaults(key: .restoreStateOnQuit, defaultValue: false)
+    @StoredDefault(SettingsKey.restoreStateOnQuit, default: false)
     var shouldRestoreStateOnQuit: Bool
     
-    @Defaults(key: .restoreStateAsBeforeStartup, defaultValue: false)
+    @StoredDefault(SettingsKey.restoreStateAsBeforeStartup, default: false)
     var shouldRestorePreviousState: Bool 
     
-    @Defaults(key: .onQuitState, defaultValue: .media)
+    @StoredRawDefault(SettingsKey.onQuitState, default: .media)
     var onQuitState: FKeyMode
     
-    @Defaults(key: .disabledOnLunch, defaultValue: false)
+    @StoredDefault(SettingsKey.disabledOnLaunch, default: false)
     var isDisabled: Bool
     
-    @Defaults(key: .useLightIcon, defaultValue: false)
+    @StoredDefault(SettingsKey.useLightIcon, default: false)
     var useLightIcon: Bool
     
-    @Defaults(key: .showAllRunningProcesses, defaultValue: false)
+    @StoredDefault(SettingsKey.showAllRunningProcesses, default: false)
     var showAllRunningProcesses: Bool
     
-    @Defaults(key: .userHasAlreadyAnsweredAccessibility, defaultValue: false)
+    @StoredDefault(SettingsKey.userHasAlreadyAnsweredAccessibility, default: false)
     var hasAlreadyAnsweredAccessibility: Bool 
     
-    @Defaults(key: .fnKeyMaximumDelay, defaultValue: 280)
+    @StoredDefault(SettingsKey.fnKeyMaximumDelay, default: 280)
     var fnKeyMaximumDelay: TimeInterval
     
-    @Defaults(key: .hideNotificationAuthorizationPopup, defaultValue: false)
+    @StoredDefault(SettingsKey.hideNotificationAuthorizationPopup, default: false)
     var hideNotificationAuthorizationPopup: Bool
     
-    @Defaults(key: .sendFnKeyNotification, defaultValue: true)
+    @StoredDefault(SettingsKey.sendFnKeyNotification, default: true)
     var sendFnKeyNotification: Bool
     
-    @Defaults(key: .userNotificationEnablement, defaultValue: .none)
+    @StoredRawDefault(SettingsKey.userNotificationEnablement, default: .none)
     var userNotificationEnablement: UserNotificationEnablement
-    
-    @Defaults(key: .sendLegacyUserNotifications, defaultValue: false)
-    var sendLegacyUserNotifications: Bool
 
-    @Defaults(key: .toggleShortcutKeyCode, defaultValue: 3)
+    @StoredDefault(SettingsKey.toggleShortcutKeyCode, default: 3)
     var toggleShortcutKeyCode: Int
 
-    @Defaults(key: .toggleShortcutModifiers, defaultValue: 1_835_008)
+    @StoredDefault(SettingsKey.toggleShortcutModifiers, default: 1_835_008)
     var toggleShortcutModifiers: Int
 
-    @Defaults(key: .toggleShortcutDisplay, defaultValue: "⌃⌥⌘F")
+    @StoredDefault(SettingsKey.toggleShortcutDisplay, default: "⌃⌥⌘F")
     var toggleShortcutDisplay: String
 
-    @Defaults(key: .hideMenuBarItem, defaultValue: false)
+    @StoredDefault(SettingsKey.hideMenuBarItem, default: false)
     var hideMenuBarItem: Bool
 
-    @Defaults(key: .toggleShortcutEnabled, defaultValue: true)
+    @StoredDefault(SettingsKey.toggleShortcutEnabled, default: true)
     var toggleShortcutEnabled: Bool
     
     private(set) var rules: Set<Rule> = []
@@ -133,15 +103,24 @@ class AppManager: BehaviorDidChangePoster {
     }
 
     private func migrateTahoePreferencesIfNeeded() {
-        guard !defaults.bool(forKey: UserDefaultsKeyName.migratedTahoePreferences.rawValue) else { return }
-        defer { defaults.set(true, forKey: UserDefaultsKeyName.migratedTahoePreferences.rawValue) }
+        guard !defaults.bool(forKey: SettingsKey.migratedTahoePreferences) else { return }
+        defer { defaults.set(true, forKey: SettingsKey.migratedTahoePreferences) }
 
         guard let legacyDefaults = UserDefaults(suiteName: "com.pyrolyse.FluorTahoe")?.persistentDomain(forName: "com.pyrolyse.FluorTahoe") else { return }
+        let currentDomainName = Bundle.main.bundleIdentifier ?? ""
+        let currentDefaults = defaults.persistentDomain(forName: currentDomainName) ?? [:]
 
-        for (key, value) in legacyDefaults where defaults.object(forKey: key) == nil {
+        let excludedKeys: Set<String> = [
+            "HasAlreadyRefusedAccessibility"
+        ]
+
+        for (key, value) in legacyDefaults
+        where !key.hasPrefix("NSStatusItem ")
+            && !excludedKeys.contains(key)
+            && currentDefaults[key] == nil {
             defaults.set(value, forKey: key)
         }
-        defaults.set(true, forKey: UserDefaultsKeyName.migratedTahoePreferences.rawValue)
+        defaults.set(true, forKey: SettingsKey.migratedTahoePreferences)
     }
     
     func propagate(behavior: AppBehavior, forApp id: String, at url: URL, from source: NotificationSource) {
@@ -197,13 +176,13 @@ class AppManager: BehaviorDidChangePoster {
     }
     
     private func loadRules() {
-        if let rules: Set<Rule> = self.defaults.convertible(forKey: UserDefaultsKeyName.appRules.rawValue) {
-            self.rules = rules
-            self.behaviorDict = .init(uniqueKeysWithValues: rules.map { ($0.id, $0.behavior) })
-        }
+        let storedRules = defaults.array(forKey: SettingsKey.appRules) as? [[String: Any]] ?? []
+        let rules = Set(storedRules.compactMap(Rule.init(storedValue:)))
+        self.rules = rules
+        self.behaviorDict = .init(uniqueKeysWithValues: rules.map { ($0.id, $0.behavior) })
     }
     
     private func synchronizeRules() {
-        self.defaults.set(self.rules, forKey: UserDefaultsKeyName.appRules.rawValue)
+        defaults.set(rules.map(\.storedValue), forKey: SettingsKey.appRules)
     }
 }

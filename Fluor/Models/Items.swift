@@ -27,7 +27,6 @@
 //
 
 import Cocoa
-import DefaultsWrapper
 
 class Item: NSObject, Identifiable {
     var notificationSource: NotificationSource { .undefined }
@@ -81,7 +80,7 @@ final class RunningApp: Item, BehaviorDidChangeObserver {
 }
 
 
-final class Rule: Item, UserDefaultsConvertible {
+final class Rule: Item {
     override var notificationSource: NotificationSource { .rule }
     
     override var hash: Int {
@@ -89,13 +88,13 @@ final class Rule: Item, UserDefaultsConvertible {
     }
     
     
-    func convertedObject() -> [String: Any] {
+    var storedValue: [String: Any] {
         ["id": self.id, "path": self.url.path, "behavior": self.behavior.rawValue]
     }
     
-    static func instanciate(from object: [String: Any]) -> Rule? {
+    convenience init?(storedValue object: [String: Any]) {
         guard let id = object["id"] as? String, let path = object["path"] as? String, let rawBehavior = object["behavior"] as? Int, let behavior = AppBehavior(rawValue: rawBehavior) else { return nil }
         let url = URL(fileURLWithPath: path)
-        return Rule(id: id, url: url, behavior: behavior)
+        self.init(id: id, url: url, behavior: behavior)
     }
 }

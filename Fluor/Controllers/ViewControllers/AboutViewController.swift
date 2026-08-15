@@ -31,11 +31,6 @@ import Cocoa
 
 class AboutViewController: NSViewController {
     @IBOutlet weak var versionLabel: NSTextField!
-    @IBOutlet weak var webpageButton: NSButton!
-    @IBOutlet weak var twitterButton: NSButton!
-    @IBOutlet weak var githubButton: NSButton!
-    @IBOutlet weak var supportButton: NSButton!
-    @IBOutlet weak var iconView: NSImageView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -81,5 +76,9 @@ class AboutViewController: NSViewController {
     
     @IBAction func goToSupport(_ sender: Any) {
         self.openUrlForInfo(key: "FLSupportEmail")
+    }
+
+    @IBAction func goToReleaseNotes(_ sender: Any) {
+        self.openUrlForInfo(key: "FLReleasesURL")
     }
 }

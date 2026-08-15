@@ -33,7 +33,7 @@ class RuleCellView: NSTableCellView {
     override var backgroundStyle: NSView.BackgroundStyle {
         didSet {
             switch self.backgroundStyle {
-            case .light:
+            case .normal:
                 self.textField?.textColor = .textColor
             default:
                 self.textField?.textColor = .selectedMenuItemTextColor

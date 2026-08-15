@@ -28,6 +28,7 @@
 
 
 import Cocoa
+import UniformTypeIdentifiers
 
 class RulesEditorViewController: NSViewController, BehaviorDidChangeObserver {
     @IBOutlet weak var tableView: NSTableView!
@@ -89,7 +90,7 @@ class RulesEditorViewController: NSViewController, BehaviorDidChangeObserver {
     private func addRule() {
         let openPanel = NSOpenPanel()
         openPanel.allowsMultipleSelection = true
-        openPanel.allowedFileTypes = ["com.apple.bundle"]
+        openPanel.allowedContentTypes = [.application]
         openPanel.canChooseDirectories = false
         openPanel.directoryURL = URL(fileURLWithPath: "/Applications")
         openPanel.runModal()

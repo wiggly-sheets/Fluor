@@ -10,9 +10,7 @@
 		3F0A2A302014BA11009F9610 /* RunningAppsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F0A2A2F2014BA11009F9610 /* RunningAppsViewController.swift */; };
 		3F0A2A332014BA2D009F9610 /* RunningApps.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3F0A2A312014BA2D009F9610 /* RunningApps.storyboard */; };
 		3F15629C23FE892A00CD0773 /* MoverImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F15629B23FE892A00CD0773 /* MoverImageView.swift */; };
-		3F16ECDD23E9D1AC008BC89A /* DefaultsWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = 3F16ECDC23E9D1AC008BC89A /* DefaultsWrapper */; };
 		3F16ECDF23EC459F008BC89A /* ResultExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F16ECDE23EC459F008BC89A /* ResultExtension.swift */; };
-		3F16ECE123EDDF66008BC89A /* SetExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F16ECE023EDDF66008BC89A /* SetExtension.swift */; };
 		3F244071245D73180061960A /* UserNotificationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F244070245D73180061960A /* UserNotificationHelper.swift */; };
 		3F2571F41FDBD43500020194 /* TableViewContentAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F2571F31FDBD43500020194 /* TableViewContentAnimator.swift */; };
 		3F266BA1246489D70005395F /* MultilinesCheckBoxLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F266BA0246489D70005395F /* MultilinesCheckBoxLabel.swift */; };
@@ -25,7 +23,8 @@
 		3F2FA4011D79D66D003E2AD8 /* DefaultModeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F2FA4001D79D66D003E2AD8 /* DefaultModeViewController.swift */; };
 		3F2FA4031D7A059F003E2AD8 /* CurrentAppViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F2FA4021D7A059F003E2AD8 /* CurrentAppViewController.swift */; };
 		3F2FA4051D7A1F87003E2AD8 /* AppManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F2FA4041D7A1F87003E2AD8 /* AppManager.swift */; };
-		3F3433341E50C53A009F4D86 /* ReleaseNotes.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 3F3433331E50C53A009F4D86 /* ReleaseNotes.rtf */; };
+		F10A00070000000000000001 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10A00080000000000000001 /* AppSettings.swift */; };
+		F10A000A0000000000000001 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = F10A00090000000000000001 /* AppIcon.icon */; };
 		3F4ABD0E201937B30075B178 /* RulesEditor.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3F4ABD0C201937B30075B178 /* RulesEditor.storyboard */; };
 		3F4ABD1020193B8D0075B178 /* RulesEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4ABD0F20193B8D0075B178 /* RulesEditorViewController.swift */; };
 		3F4E36C32111EF7A00CDCAA0 /* CheckableMenuItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4E36C22111EF7A00CDCAA0 /* CheckableMenuItem.swift */; };
@@ -53,9 +52,6 @@
 		3FD0AFA823C8759A00DC9533 /* AppErrorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FD0AFA723C8759A00DC9533 /* AppErrorManager.swift */; };
 		3FE213291D89A6940023FAC2 /* NotificationHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE213281D89A6940023FAC2 /* NotificationHelpers.swift */; };
 		3FE2A5F51E5650ED0011E544 /* MenuItemsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE2A5F41E5650ED0011E544 /* MenuItemsController.swift */; };
-		3FE38EA8221D90930019B889 /* ReleaseNotesWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE38EA7221D90930019B889 /* ReleaseNotesWindowController.swift */; };
-		3FE38EAA221D91640019B889 /* Release.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE38EA9221D91640019B889 /* Release.swift */; };
-		3FE38EAC221DBE880019B889 /* ReleaseNotesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE38EAB221DBE880019B889 /* ReleaseNotesViewController.swift */; };
 		3FE784DD2052F591007F6200 /* NSViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE784DC2052F591007F6200 /* NSViewExtension.swift */; };
 		3FE784E12053D455007F6200 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 3FE784E02053D455007F6200 /* README.md */; };
 		3FE7B6C9245DC6180027DB39 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3FE7B6CB245DC6180027DB39 /* Localizable.strings */; };
@@ -78,7 +74,6 @@
 		3F0A2A322014BA2D009F9610 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/RunningApps.storyboard; sourceTree = "<group>"; };
 		3F15629B23FE892A00CD0773 /* MoverImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoverImageView.swift; sourceTree = "<group>"; };
 		3F16ECDE23EC459F008BC89A /* ResultExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultExtension.swift; sourceTree = "<group>"; };
-		3F16ECE023EDDF66008BC89A /* SetExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetExtension.swift; sourceTree = "<group>"; };
 		3F244070245D73180061960A /* UserNotificationHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserNotificationHelper.swift; sourceTree = "<group>"; };
 		3F2571F31FDBD43500020194 /* TableViewContentAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewContentAnimator.swift; sourceTree = "<group>"; };
 		3F266BA0246489D70005395F /* MultilinesCheckBoxLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultilinesCheckBoxLabel.swift; sourceTree = "<group>"; };
@@ -91,7 +86,8 @@
 		3F2FA4001D79D66D003E2AD8 /* DefaultModeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultModeViewController.swift; sourceTree = "<group>"; };
 		3F2FA4021D7A059F003E2AD8 /* CurrentAppViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrentAppViewController.swift; sourceTree = "<group>"; };
 		3F2FA4041D7A1F87003E2AD8 /* AppManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppManager.swift; sourceTree = "<group>"; };
-		3F3433331E50C53A009F4D86 /* ReleaseNotes.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = ReleaseNotes.rtf; sourceTree = "<group>"; };
+		F10A00080000000000000001 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
+		F10A00090000000000000001 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 		3F3CFB4322131B5E00002089 /* Fluor.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Fluor.entitlements; sourceTree = "<group>"; };
 		3F4ABD0D201937B30075B178 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/RulesEditor.storyboard; sourceTree = "<group>"; };
 		3F4ABD0F20193B8D0075B178 /* RulesEditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RulesEditorViewController.swift; sourceTree = "<group>"; };
@@ -127,9 +123,6 @@
 		3FE38EA02219E9B60019B889 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/MainMenu.strings; sourceTree = "<group>"; };
 		3FE38EA22219EBBC0019B889 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Preferences.strings; sourceTree = "<group>"; };
 		3FE38EA42219EF410019B889 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/RulesEditor.strings; sourceTree = "<group>"; };
-		3FE38EA7221D90930019B889 /* ReleaseNotesWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReleaseNotesWindowController.swift; sourceTree = "<group>"; };
-		3FE38EA9221D91640019B889 /* Release.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Release.swift; sourceTree = "<group>"; };
-		3FE38EAB221DBE880019B889 /* ReleaseNotesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReleaseNotesViewController.swift; sourceTree = "<group>"; };
 		3FE784DC2052F591007F6200 /* NSViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSViewExtension.swift; sourceTree = "<group>"; };
 		3FE784E02053D455007F6200 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
 		3FE7B6CA245DC6180027DB39 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -144,7 +137,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3F16ECDD23E9D1AC008BC89A /* DefaultsWrapper in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -155,10 +147,10 @@
 			isa = PBXGroup;
 			children = (
 				3F2FA4041D7A1F87003E2AD8 /* AppManager.swift */,
+				F10A00080000000000000001 /* AppSettings.swift */,
 				3F8F93BC1EEAF1EB00FCE91F /* RuleValueTransformer.swift */,
 				3FC44EF91D7F169A0065D433 /* Enums.swift */,
 				3FC44EFB1D7F16CB0065D433 /* Items.swift */,
-				3FE38EA9221D91640019B889 /* Release.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -183,7 +175,6 @@
 				3FE7E0E81D7CC01B00DC754D /* RulesEditorWindowController.swift */,
 				3F7291F12028BC6B005C9B70 /* PreferencesWindowController.swift */,
 				3FE7E0E11D7CBE1700DC754D /* AboutWindowController.swift */,
-				3FE38EA7221D90930019B889 /* ReleaseNotesWindowController.swift */,
 			);
 			path = WindowControllers;
 			sourceTree = "<group>";
@@ -198,7 +189,6 @@
 				3F0A2A2F2014BA11009F9610 /* RunningAppsViewController.swift */,
 				3F4ABD0F20193B8D0075B178 /* RulesEditorViewController.swift */,
 				3F6D52CB2069667300517E57 /* AboutViewController.swift */,
-				3FE38EAB221DBE880019B889 /* ReleaseNotesViewController.swift */,
 				3F2CAE69246038E30046D711 /* UserNotificationEnablementViewController.swift */,
 			);
 			path = ViewControllers;
@@ -248,7 +238,6 @@
 				3F8879901FBF41EC005C28E6 /* NSStoryboardNamesExtension.swift */,
 				3FE784DC2052F591007F6200 /* NSViewExtension.swift */,
 				3F16ECDE23EC459F008BC89A /* ResultExtension.swift */,
-				3F16ECE023EDDF66008BC89A /* SetExtension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -281,6 +270,7 @@
 			isa = PBXGroup;
 			children = (
 				3F3CFB4322131B5E00002089 /* Fluor.entitlements */,
+				F10A00090000000000000001 /* AppIcon.icon */,
 				3F4C5CB22019449B006CC84A /* Extensions */,
 				3F4C5CB12019444B006CC84A /* Protocols */,
 				3F4ABD13201941820075B178 /* Models */,
@@ -289,7 +279,6 @@
 				3FE7E0E71D7CBEC700DC754D /* XIBs */,
 				3F4C5CB02019441D006CC84A /* Misc */,
 				3FCD16A61D79793600C57B22 /* Assets.xcassets */,
-				3F3433331E50C53A009F4D86 /* ReleaseNotes.rtf */,
 				3FE7B6CB245DC6180027DB39 /* Localizable.strings */,
 				3FCD16AB1D79793600C57B22 /* Info.plist */,
 				3FE784E02053D455007F6200 /* README.md */,
@@ -327,7 +316,6 @@
 			);
 			name = Fluor;
 			packageProductDependencies = (
-				3F16ECDC23E9D1AC008BC89A /* DefaultsWrapper */,
 			);
 			productName = Fluor;
 			productReference = 3FCD16A11D79793600C57B22 /* Fluor.app */;
@@ -370,7 +358,6 @@
 			);
 			mainGroup = 3FCD16981D79793600C57B22;
 			packageReferences = (
-				3F16ECDB23E9D1AC008BC89A /* XCRemoteSwiftPackageReference "DefaultsWrapper" */,
 			);
 			productRefGroup = 3FCD16A21D79793600C57B22 /* Products */;
 			projectDirPath = "";
@@ -386,13 +373,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F10A000A0000000000000001 /* AppIcon.icon in Resources */,
 				3FCD16A71D79793600C57B22 /* Assets.xcassets in Resources */,
 				3FE784E12053D455007F6200 /* README.md in Resources */,
 				3FE7B6C9245DC6180027DB39 /* Localizable.strings in Resources */,
 				3F0A2A332014BA2D009F9610 /* RunningApps.storyboard in Resources */,
 				3F820C412219B63F00004813 /* Preferences.storyboard in Resources */,
 				3F883E76240050A600E2A7D7 /* Main.xib in Resources */,
-				3F3433341E50C53A009F4D86 /* ReleaseNotes.rtf in Resources */,
 				3F6D52CA2069659800517E57 /* About.storyboard in Resources */,
 				3F4ABD0E201937B30075B178 /* RulesEditor.storyboard in Resources */,
 				3FCD16AA1D79793600C57B22 /* MainMenu.xib in Resources */,
@@ -416,7 +403,6 @@
 				3F244071245D73180061960A /* UserNotificationHelper.swift in Sources */,
 				3F0A2A302014BA11009F9610 /* RunningAppsViewController.swift in Sources */,
 				3FD0AFA823C8759A00DC9533 /* AppErrorManager.swift in Sources */,
-				3FE38EAA221D91640019B889 /* Release.swift in Sources */,
 				3F2CAE6A246038E30046D711 /* UserNotificationEnablementViewController.swift in Sources */,
 				3F2FA4031D7A059F003E2AD8 /* CurrentAppViewController.swift in Sources */,
 				3F8879911FBF41EC005C28E6 /* NSStoryboardNamesExtension.swift in Sources */,
@@ -426,9 +412,8 @@
 				3F266BA1246489D70005395F /* MultilinesCheckBoxLabel.swift in Sources */,
 				F10A00010000000000000001 /* HotkeyRecorderButton.swift in Sources */,
 				F10A00030000000000000001 /* MediaModeIcon.swift in Sources */,
-				3FE38EAC221DBE880019B889 /* ReleaseNotesViewController.swift in Sources */,
 				3F84FE81200E655E00871275 /* StoryboardInstantiableProtocol.swift in Sources */,
-				3F16ECE123EDDF66008BC89A /* SetExtension.swift in Sources */,
+				F10A00070000000000000001 /* AppSettings.swift in Sources */,
 				3FE2A5F51E5650ED0011E544 /* MenuItemsController.swift in Sources */,
 				3F4ABD1020193B8D0075B178 /* RulesEditorViewController.swift in Sources */,
 				3FCD16A51D79793600C57B22 /* AppDelegate.swift in Sources */,
@@ -436,7 +421,6 @@
 				3F8F93BD1EEAF1EB00FCE91F /* RuleValueTransformer.swift in Sources */,
 				3F5F57582016249E002AF4C1 /* RunningAppWindowController.swift in Sources */,
 				3FD0AFA623C62CD400DC9533 /* FKeyManager.swift in Sources */,
-				3FE38EA8221D90930019B889 /* ReleaseNotesWindowController.swift in Sources */,
 				3F8F93BB1EEAC9B900FCE91F /* RuleCellView.swift in Sources */,
 				3F16ECDF23EC459F008BC89A /* ResultExtension.swift in Sources */,
 				3FE213291D89A6940023FAC2 /* NotificationHelpers.swift in Sources */,
@@ -578,6 +562,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -585,6 +570,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
 			};
 			name = Debug;
 		};
@@ -632,12 +618,14 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
 			};
 			name = Release;
 		};
@@ -650,9 +638,10 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2600;
+				CURRENT_PROJECT_VERSION = 2700;
 				DEVELOPMENT_TEAM = Q2E884V952;
 				ENABLE_HARDENED_RUNTIME = YES;
+				EXTRACT_APP_INTENTS_METADATA = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Fluor",
@@ -663,8 +652,8 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
-				MARKETING_VERSION = 2.6.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.pyrolyse.FluorTahoe;
+				MARKETING_VERSION = 2.7.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zm.fluor;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -683,9 +672,10 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2600;
+				CURRENT_PROJECT_VERSION = 2700;
 				DEVELOPMENT_TEAM = Q2E884V952;
 				ENABLE_HARDENED_RUNTIME = YES;
+				EXTRACT_APP_INTENTS_METADATA = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Fluor",
@@ -696,9 +686,9 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
-				MARKETING_VERSION = 2.6.0;
+				MARKETING_VERSION = 2.7.0;
 				OTHER_SWIFT_FLAGS = "-DRELEASE";
-				PRODUCT_BUNDLE_IDENTIFIER = com.pyrolyse.FluorTahoe;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zm.fluor;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";
@@ -731,24 +721,6 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCRemoteSwiftPackageReference section */
-		3F16ECDB23E9D1AC008BC89A /* XCRemoteSwiftPackageReference "DefaultsWrapper" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Pyroh/DefaultsWrapper.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.1.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		3F16ECDC23E9D1AC008BC89A /* DefaultsWrapper */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3F16ECDB23E9D1AC008BC89A /* XCRemoteSwiftPackageReference "DefaultsWrapper" */;
-			productName = DefaultsWrapper;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 3FCD16991D79793600C57B22 /* Project object */;
 }

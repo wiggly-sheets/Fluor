@@ -29,7 +29,7 @@
 
 import Cocoa
 
-@objc protocol DefaultModeViewControllerDelegate: class {
+@objc protocol DefaultModeViewControllerDelegate: AnyObject {
     @objc optional func defaultModeController(_ controller: DefaultModeViewController, willChangeModeTo mode: FKeyMode)
     func defaultModeController(_ controller: DefaultModeViewController, didChangeModeTo mode: FKeyMode)
 }

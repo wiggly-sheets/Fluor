@@ -37,7 +37,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     let statusMenuController: StatusMenuController = .init()
     private var mainMenuTopLevelObjects: [Any] = []
     private var ongoingMenuBarActivity: NSObjectProtocol?
-    private let legacyPreferencesMigrationKey = "DidMigrateLegacyFluorPreferences"
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -45,8 +44,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        migrateLegacyPreferences()
-
         DispatchQueue.main.async { [weak self] in
             let processInfo = ProcessInfo.processInfo
             processInfo.automaticTerminationSupportEnabled = true
@@ -74,26 +71,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         return true
     }
 
-    // Do not migrate stale status-item placement from the prior bundle identity.
-    private func migrateLegacyPreferences() {
-        let defaults = UserDefaults.standard
-        guard defaults.object(forKey: legacyPreferencesMigrationKey) == nil else { return }
-
-        let excludedKeys: Set<String> = [
-            "HasAlreadyRefusedAccessibility"
-        ]
-        let legacyDomain = defaults.persistentDomain(forName: "com.pyrolyse.Fluor") ?? [:]
-
-        for (key, value) in legacyDomain
-        where !key.hasPrefix("NSStatusItem ") && !excludedKeys.contains(key) {
-            if defaults.object(forKey: key) == nil {
-                defaults.set(value, forKey: key)
-            }
-        }
-
-        defaults.set(true, forKey: legacyPreferencesMigrationKey)
-    }
-    
     private func loadMainMenu() {
         guard self.mainMenuTopLevelObjects.isEmpty else { return }
         let nib = NSNib(nibNamed: "MainMenu", bundle: nil)

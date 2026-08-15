@@ -24,8 +24,8 @@
 	<string>https://github.com/wiggly-sheets/fluor</string>
 	<key>FLPyrolyseURL</key>
 	<string>https://pyrolyse.it</string>
-	<key>FLRNListURL</key>
-	<string>https://api.github.com/repos/wiggly-sheets/fluor/releases</string>
+	<key>FLReleasesURL</key>
+	<string>https://github.com/wiggly-sheets/fluor/releases</string>
 	<key>FLSupportEmail</key>
 	<string>https://github.com/wiggly-sheets/fluor/issues</string>
 	<key>FLTwitterURL</key>

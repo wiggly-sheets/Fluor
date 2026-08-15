@@ -35,19 +35,11 @@ enum UserNotificationHelper {
     
     static func askUserAtLaunch() {
         guard !AppManager.default.hideNotificationAuthorizationPopup else { return }
-        if #available(OSX 10.14, *) {
-            askOnStartupIfNeeded()
-        } else {
-            legacyAskOnStartupIfNeededStartup()
-        }
+        askOnStartupIfNeeded()
     }
     
     static func askUser(then action: @escaping (Bool) -> ()) {
-        if #available(OSX 10.14, *) {
-            askIfNeeded(then: action)
-        } else {
-            legacyAskIfNeeded(then: action)
-        }
+        askIfNeeded(then: action)
     }
     
     static func sendModeChangedTo(_ mode: FKeyMode) {
@@ -76,14 +68,9 @@ enum UserNotificationHelper {
     }
     
     private static func send(title: String, message: String) {
-        if #available(OSX 10.14, *) {
-            sendNotification(withTitle: title, andMessage: message)
-        } else {
-            legacySendNotification(withMessage: title, andMessage: message)
-        }
+        sendNotification(withTitle: title, andMessage: message)
     }
     
-    @available(OSX 10.14, *)
     private static func sendNotification(withTitle title: String, andMessage msg: String) {
         let content = UNMutableNotificationContent()
         content.title = title
@@ -93,33 +80,20 @@ enum UserNotificationHelper {
         UNUserNotificationCenter.current().add(req)
     }
     
-    private static func legacySendNotification(withMessage title: String, andMessage msg: String) {
-        let notification = NSUserNotification()
-        notification.title = title
-        notification.subtitle = msg
-        NSUserNotificationCenter.default.deliver(notification)
-    }
-    
     static func ifAuthorized(perform action: @escaping () -> (), else unauthorizedAction: @escaping () -> ()) {
-        if #available(OSX 10.14, *) {
-            UNUserNotificationCenter.current().getNotificationSettings { (settings) in
-                DispatchQueue.main.async {
-                    guard settings.authorizationStatus == .authorized else { return unauthorizedAction() }
-                    action()
-                }
+        UNUserNotificationCenter.current().getNotificationSettings { settings in
+            DispatchQueue.main.async {
+                guard settings.authorizationStatus == .authorized else { return unauthorizedAction() }
+                action()
             }
-        } else {
-            guard AppManager.default.sendLegacyUserNotifications else { return unauthorizedAction() }
-            action()
         }
     }
     
-    @available(OSX 10.14, *)
     private static func askOnStartupIfNeeded() {
         UNUserNotificationCenter.current().getNotificationSettings { (settings) in
             DispatchQueue.main.async {
-                guard settings.authorizationStatus != .denied, settings.authorizationStatus != .authorized else { return }
-                guard settings.authorizationStatus != .authorized else { return }
+                guard settings.authorizationStatus != .denied,
+                      settings.authorizationStatus != .authorized else { return }
                 
                 let alert = makeAlert(suppressible: true)
                 let avc = makeAccessoryView()
@@ -150,23 +124,6 @@ enum UserNotificationHelper {
         }
     }
     
-    private static func legacyAskOnStartupIfNeededStartup() {
-        guard !AppManager.default.sendLegacyUserNotifications else { return }
-        let alert = makeAlert(suppressible: true)
-        let avc = makeAccessoryView()
-        alert.buttons.first?.bind(.enabled, to: avc, withKeyPath: "canEnableNotifications", options: nil)
-        alert.accessoryView = avc.view
-        
-        NSApp.activate(ignoringOtherApps: true)
-        let result = alert.runModal()
-        
-        if result == .alertFirstButtonReturn {
-            AppManager.default.sendLegacyUserNotifications = true
-            AppManager.default.userNotificationEnablement = .from(avc)
-        }
-    }
-    
-    @available(OSX 10.14, *)
     private static func askIfNeeded(then action: @escaping (Bool) -> ()) {
         UNUserNotificationCenter.current().getNotificationSettings { (settings) in
             DispatchQueue.main.async {
@@ -194,14 +151,6 @@ enum UserNotificationHelper {
                 }
             }
         }
-    }
-    
-    private static func legacyAskIfNeeded(then action: (Bool) -> ()) {
-        guard AppManager.default.sendLegacyUserNotifications else { return }
-        let alert = makeAlert()
-        NSApp.activate(ignoringOtherApps: true)
-        let result = alert.runModal()
-        action(result == .alertFirstButtonReturn)
     }
     
     private static func retryOnDenied() -> Bool {
