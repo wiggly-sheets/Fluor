@@ -73,7 +73,6 @@ final class RunningApp: Item, BehaviorDidChangeObserver {
         self.stopObservingBehaviorDidChange()
     }
     
-    // MARK: BehaviorDidChangeObserver
     func behaviorDidChangeForApp(notification: Notification) {
         guard let id = notification.userInfo?["id"] as? String, self.id == id,
             let appBehavior = notification.userInfo?["behavior"] as? AppBehavior else { return }
@@ -89,7 +88,6 @@ final class Rule: Item, UserDefaultsConvertible {
         self.url.hashValue
     }
     
-    // MARK: UserDefaultsConvertible
     
     func convertedObject() -> [String: Any] {
         ["id": self.id, "path": self.url.path, "behavior": self.behavior.rawValue]

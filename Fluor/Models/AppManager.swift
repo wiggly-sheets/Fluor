@@ -50,11 +50,8 @@ extension UserDefaultsKeyName {
     static let sendLegacyUserNotifications: UserDefaultsKeyName = "sendLegacyUserNotification"
 }
 
-/// This class holds all per-application keyboard behaviors.
-/// It also takes care of NSUserDefaults reading and synchronizing.
 class AppManager: BehaviorDidChangePoster {
     
-    /// The defaut behavior manager.
     static let `default`: AppManager = AppManager()
     
     @Defaults(key: .keyboardMode, defaultValue: .media)
@@ -119,21 +116,11 @@ class AppManager: BehaviorDidChangePoster {
         self.postBehaviorDidChangeNotification(id: id, url: url, behavior: behavior, source: source)
     }
     
-    /// Return the behavior for the given application.
-    ///
-    /// - parameter id: The application's bundle id.
-    ///
-    /// - returns: The behavior for the application.
     func behaviorForApp(id: String) -> AppBehavior {
         return behaviorDict[id] ?? .inferred
     }
     
     
-    /// Change the application of the given bundle id and bundle url.
-    ///
-    /// - parameter id:       The application's bundle id.
-    /// - parameter behavior: The new application's behavior.
-    /// - parameter url:      The application's bundle url.
     func setBehaviorForApp(id: String, behavior: AppBehavior, url: URL) {
         var change = false
         if behavior == .inferred {
@@ -157,9 +144,6 @@ class AppManager: BehaviorDidChangePoster {
     }
     
     
-    /// Get the function key state according to globals preferences.
-    ///
-    /// - returns: The current keyboard state.
     func getCurrentFKeyMode() -> FKeyMode {
         FKeyManager.getCurrentFKeyMode().getOrFailWith { (error) -> Never in
             AppErrorManager.terminateApp(withReason: error.localizedDescription)
@@ -167,11 +151,6 @@ class AppManager: BehaviorDidChangePoster {
     }
     
     
-    /// Return the keyboard state for the given behavior based on the actual keyboard state.
-    ///
-    /// - parameter behavior: The behavior.
-    ///
-    /// - returns: The keyboard state.
     func keyboardStateFor(behavior: AppBehavior) -> FKeyMode {
         switch behavior {
         case .inferred:
@@ -183,7 +162,6 @@ class AppManager: BehaviorDidChangePoster {
         }
     }
     
-    /// Load the defaults.
     private func loadRules() {
         if let rules: Set<Rule> = self.defaults.convertible(forKey: UserDefaultsKeyName.appRules.rawValue) {
             self.rules = rules
@@ -191,7 +169,6 @@ class AppManager: BehaviorDidChangePoster {
         }
     }
     
-    /// Synchronize and write the defaults from altered data held by this `BehaviorManager` instance.
     private func synchronizeRules() {
         self.defaults.set(self.rules, forKey: UserDefaultsKeyName.appRules.rawValue)
     }

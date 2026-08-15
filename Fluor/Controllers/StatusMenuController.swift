@@ -31,7 +31,6 @@ import Cocoa
 import DefaultsWrapper
 
 class StatusMenuController: NSObject, NSMenuDelegate, NSWindowDelegate, MenuControlObserver {
-    //MARK: - Menu Delegate
     @IBOutlet weak var statusMenu: NSMenu!
     @IBOutlet var menuItemsController: MenuItemsController!
     @IBOutlet var behaviorController: BehaviorController!
@@ -79,16 +78,10 @@ class StatusMenuController: NSObject, NSMenuDelegate, NSWindowDelegate, MenuCont
         }
     }
     
-    // MARK: - Private functions
-    
-    /// Setup the status bar's item
     private func setupStatusMenu() {
         self.statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
 
-        // Tahoe persists visibility for unnamed items under generic names such
-        // as "Item-0". If another anonymous item has been hidden, Fluor then
-        // inherits that hidden state and Control Center removes it immediately.
-        // Give Fluor its own identity before configuring the item.
+        // A stable identity prevents Tahoe from inheriting another item's hidden state.
         self.statusItem.autosaveName = "FluorStatusItemTahoe"
         self.statusItem.isVisible = true
         self.statusItem.menu = statusMenu
@@ -101,7 +94,6 @@ class StatusMenuController: NSObject, NSMenuDelegate, NSWindowDelegate, MenuCont
         statusItem.button?.toolTip = "Fluor"
     }
 
-    /// Adapt status bar icon from user's settings.
     private func adaptStatusMenuIcon() {
         let disabledApp = AppManager.default.isDisabled
         let usesLightIcon = AppManager.default.useLightIcon
@@ -115,23 +107,19 @@ class StatusMenuController: NSObject, NSMenuDelegate, NSWindowDelegate, MenuCont
         setStatusImage(image)
     }
     
-    /// Register self as an observer for some notifications.
     private func startObservingUsesLightIcon() {
         UserDefaults.standard.addObserver(self, forKeyPath: UserDefaultsKeyName.useLightIcon.rawValue, options: [], context: nil)
     }
     
-    /// Unregister self as an observer for some notifications.
     private func stopObservingUsesLightIcon() {
         UserDefaults.standard.removeObserver(self, forKeyPath: UserDefaultsKeyName.useLightIcon.rawValue, context: nil)
     }
     
-    // MARK: - NSWindowDelegate
     
     func menuWillOpen(_ menu: NSMenu) {
         self.behaviorController.adaptToAccessibilityTrust()
     }
     
-    // MARK: - MenuControlObserver
     
     func menuNeedsToOpen(notification: Notification) { }
     
@@ -143,11 +131,7 @@ class StatusMenuController: NSObject, NSMenuDelegate, NSWindowDelegate, MenuCont
         }
     }
     
-    // MARK: IBActions
     
-    /// Show the *Edit Rules* window.
-    ///
-    /// - parameter sender: The object that sent the action.
     @IBAction func editRules(_ sender: AnyObject) {
         guard rulesController == nil else {
             rulesController?.window?.orderFrontRegardless()
@@ -158,9 +142,6 @@ class StatusMenuController: NSObject, NSMenuDelegate, NSWindowDelegate, MenuCont
         rulesController?.window?.orderFrontRegardless()
     }
     
-    /// Show the *About* window.
-    ///
-    /// - parameter sender: The object that sent the action.
     @IBAction func showAbout(_ sender: AnyObject) {
         guard aboutController == nil else {
             aboutController?.window?.makeKeyAndOrderFront(self)
@@ -175,9 +156,6 @@ class StatusMenuController: NSObject, NSMenuDelegate, NSWindowDelegate, MenuCont
         NSApp.activate(ignoringOtherApps: true)
     }
     
-    /// Show the *Preferences* window.
-    ///
-    /// - parameter sender: The object that sent the action.
     @IBAction func showPreferences(_ sender: AnyObject) {
         guard preferencesController == nil else {
             preferencesController?.window?.makeKeyAndOrderFront(self)
@@ -192,9 +170,6 @@ class StatusMenuController: NSObject, NSMenuDelegate, NSWindowDelegate, MenuCont
         NSApp.activate(ignoringOtherApps: true)
     }
     
-    /// Show the *Running Applications* window.
-    ///
-    /// - parameter sender: The object that sent the action.
     @IBAction func showRunningApps(_ sender: AnyObject) {
         guard runningAppsController == nil else {
             runningAppsController?.window?.orderFrontRegardless()
@@ -206,10 +181,6 @@ class StatusMenuController: NSObject, NSMenuDelegate, NSWindowDelegate, MenuCont
     }
     
     
-    /// Enable or disable Fluor fn keys management. 
-    /// If disabled the keyboard behaviour is set as its behaviour before app launch.
-    ///
-    /// - Parameter sender: The object that sent the action.
     @IBAction func toggleApplicationState(_ sender: NSMenuItem) {
         let disabled = sender.state == .off
         if disabled {
@@ -220,9 +191,6 @@ class StatusMenuController: NSObject, NSMenuDelegate, NSWindowDelegate, MenuCont
         self.behaviorController.setApplicationIsEnabled(!disabled)
     }
     
-    /// Terminate the application.
-    ///
-    /// - parameter sender: The object that sent the action.
     @IBAction func quitApplication(_ sender: AnyObject) {
         self.stopObservingUsesLightIcon()
         NSWorkspace.shared.notificationCenter.removeObserver(self)

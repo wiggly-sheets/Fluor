@@ -57,9 +57,6 @@ class RunningAppsViewController: NSViewController, NSTableViewDelegate {
         NSWorkspace.shared.notificationCenter.removeObserver(self)
     }
     
-    /// Called whenever an application is launched by the system or the user.
-    ///
-    /// - parameter notification: The notification.
     @objc private func appDidLaunch(notification: Notification) {
         guard let app = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication,
             let id = app.bundleIdentifier ?? app.executableURL?.lastPathComponent,
@@ -72,22 +69,17 @@ class RunningAppsViewController: NSViewController, NSTableViewDelegate {
         self.runningAppsArray.append(item)
     }
     
-    /// Called whenever an application is terminated by the system or the user.
-    ///
-    /// - parameter notification: The notification.
     @objc private func appDidTerminate(notification: Notification) {
         guard let app = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication,
             let item = runningAppsArray.first(where: { $0.pid == app.processIdentifier }), let index = runningAppsArray.firstIndex(of: item) else { return }
         self.runningAppsArray.remove(at: index)
     }
     
-    /// Set `self` as an observer for *launch* and *terminate* notfications.
     private func applyAsObserver() {
         NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(appDidLaunch(notification:)), name: NSWorkspace.didLaunchApplicationNotification, object: nil)
         NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(appDidTerminate(notification:)), name: NSWorkspace.didTerminateApplicationNotification, object: nil)
     }
     
-    /// Load all running applications and populate the table view with corresponding data.
     private func reloadData() {
         self.runningAppsArray = self.getRunningApps()
     }
@@ -104,8 +96,6 @@ class RunningAppsViewController: NSViewController, NSTableViewDelegate {
             return RunningApp(id: id, url: url, behavior: behavior, pid: pid, isApp: isApp)
         }
     }
-    
-    // MARK: - Table View Delegate
     
     func tableView(_ tableView: NSTableView, shouldSelectRow row: Int) -> Bool { false }
 }

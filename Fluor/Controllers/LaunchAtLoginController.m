@@ -55,11 +55,7 @@ void sharedFileListDidChange(LSSharedFileListRef inList, void *context)
     LSSharedFileListAddObserver(loginItems, CFRunLoopGetMain(),
                                 (CFStringRef)NSDefaultRunLoopMode, sharedFileListDidChange, (voidPtr)CFBridgingRetain(self));
 
-    // LSSharedFileList stores the absolute URL that was current when the item
-    // was added. Fluor's Tahoe test builds could therefore leave an enabled
-    // login item pointing into /private/tmp even after the app was installed.
-    // Migrate an enabled entry once so ServiceManagement records this bundle's
-    // current installed location.
+    // Re-register enabled items so ServiceManagement records the installed path.
     if (@available(macOS 13.0, *)) {
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{

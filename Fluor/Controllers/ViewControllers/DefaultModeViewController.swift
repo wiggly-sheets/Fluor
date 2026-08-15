@@ -37,9 +37,6 @@ import Cocoa
 class DefaultModeViewController: NSViewController {
     @IBOutlet weak var delegate: (AnyObject & DefaultModeViewControllerDelegate)?
     
-    /// Change the current keyboard state.
-    ///
-    /// - parameter sender: The object that sent the action.
     @IBAction func changeMode(_ sender: NSSegmentedControl) {
         guard let state = FKeyMode(rawValue: sender.selectedSegment) else { return }
         delegate?.defaultModeController?(self, willChangeModeTo: state)

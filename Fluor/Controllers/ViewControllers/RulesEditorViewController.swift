@@ -71,11 +71,6 @@ class RulesEditorViewController: NSViewController, BehaviorDidChangeObserver {
         }
     }
     
-    // MARK: - BehaviorDidChangeObserver
-    
-    /// Called when a rule change for an application.
-    ///
-    /// - parameter notification: The notification.
     func behaviorDidChangeForApp(notification: Notification) {
         guard let userInfo = notification.userInfo as? [String: Any], userInfo["source"] as? NotificationSource != .rule else { return }
         guard let id = userInfo["id"] as? String, let behavior = userInfo["behavior"] as? AppBehavior, let url = userInfo["url"] as? URL else { return }
@@ -91,9 +86,6 @@ class RulesEditorViewController: NSViewController, BehaviorDidChangeObserver {
         }
     }
     
-    // MARK: - Private functions
-    
-    /// Add a rule for an application.
     private func addRule() {
         let openPanel = NSOpenPanel()
         openPanel.allowsMultipleSelection = true
@@ -111,7 +103,6 @@ class RulesEditorViewController: NSViewController, BehaviorDidChangeObserver {
         rulesSet.formUnion(items)
     }
     
-    /// Remove a rule for a given application.
     private func removeRule() {
         guard let items = itemsArrayController.selectedObjects as? [Rule] else { return }
         items.forEach { (item) in
@@ -119,8 +110,6 @@ class RulesEditorViewController: NSViewController, BehaviorDidChangeObserver {
         }
         itemsArrayController.remove(self)
     }
-    
-    // MARK: - Actions
     
     @IBAction func operateRuleCollection(_ sender: NSSegmentedControl) {
         switch sender.selectedSegment {

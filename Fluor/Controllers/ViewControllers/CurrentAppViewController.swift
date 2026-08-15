@@ -73,21 +73,11 @@ class CurrentAppViewController: NSViewController, BehaviorDidChangeObserver, Act
         self.view.setFrameSize(newFrame.size)
     }
     
-    /// Change the behavior for the current running application.
-    /// It makes sure the behavior manager gets notfified of this change.
-    ///
-    /// - parameter sender: The object that sent the action.
     @IBAction func behaviorChanged(_ sender: NSSegmentedControl) {
         guard let behavior = AppBehavior(rawValue: sender.selectedSegment), let url = self.currentAppURL else { return }
         AppManager.default.propagate(behavior: behavior, forApp: self.currentAppID, at: url, from: .mainMenu)
     }
     
-    // MARK: - Private functions
-    
-    /// Change the current running application presented by the view.
-    ///
-    /// - parameter app:      The running application.
-    /// - parameter behavior: The behavior for the application. Either from the rules collection or infered if none.
     private func setCurrent(app: NSRunningApplication) {
         guard let id = app.bundleIdentifier ?? app.executableURL?.lastPathComponent,
             let url = app.bundleURL ?? app.executableURL else { return }
@@ -105,14 +95,10 @@ class CurrentAppViewController: NSViewController, BehaviorDidChangeObserver, Act
         }
     }
     
-    // MARK: - ActiveApplicationDidChangeObserver
-    
     func activeApplicationDidChangw(notification: Notification) {
         guard let app = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication else { return }
         self.setCurrent(app: app)
     }
-    
-    // MARK: - BehaviorDidChangeObserver
     
     func behaviorDidChangeForApp(notification: Notification) {
         guard let userInfo = notification.userInfo as? [String: Any], userInfo["source"] as? NotificationSource != .mainMenu else { return }

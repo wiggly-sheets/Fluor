@@ -78,9 +78,7 @@ enum FKeyManager {
         }
     }
 
-    /// Modern macOS no longer permits third-party processes to open the
-    /// IOHIDSystem parameter user client. Update the global keyboard preference
-    /// and ask macOS to apply it through its settings activation service.
+    // Modern macOS requires applying the global preference through activateSettings.
     private static func setCurrentFKeyModeViaPreferences(_ mode: FKeyMode) throws {
         let originalMode = try getCurrentFKeyMode().get()
         setFunctionKeyPreference(mode)

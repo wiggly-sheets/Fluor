@@ -52,7 +52,6 @@ class PoppingLinkButton: NSButton {
         self.addCursorRect(self.bounds, cursor: .pointingHand)
     }
     
-    // Thanks to Kite Compositor (kiteapp.co)
     override func mouseEntered(with event: NSEvent) {
         guard self.growsOnHover, let layer = self.layer else { return }
         
@@ -71,7 +70,6 @@ class PoppingLinkButton: NSButton {
         layer.add(transformScaleAnimation, forKey: "growAnimation")
     }
     
-    // Thanks to Kite Compositor (kiteapp.co)
     override func mouseExited(with event: NSEvent) {
         guard self.growsOnHover, let layer = self.layer else { return }
         

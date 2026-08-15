@@ -58,7 +58,6 @@ class MenuItemsController: NSObject, SwitchMethodDidChangeObserver, TriggerSecti
         }
     }
     
-    // MARK: - SwitchMethodDidChangeObserver
     
     func switchMethodDidChange(notification: Notification) {
         guard let method = notification.userInfo?["method"] as? SwitchMethod,
@@ -71,7 +70,6 @@ class MenuItemsController: NSObject, SwitchMethodDidChangeObserver, TriggerSecti
         }
     }
     
-    // MARK: - TriggerSectionVisibilityDidChangeObserver
     
     @objc func triggerSectionVisibilityDidChange(notification: Notification) {
         guard let visible = notification.userInfo?["visible"] as? Bool else { return }
@@ -82,7 +80,6 @@ class MenuItemsController: NSObject, SwitchMethodDidChangeObserver, TriggerSecti
         }
     }
     
-    // MARK: - Private functions
     
     private func showTriggerSection() {
         guard let switchMethodItem = self.menu.item(at: 0), let separatorItem = self.menu.item(at: 1) else { return }

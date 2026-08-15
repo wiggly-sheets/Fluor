@@ -51,8 +51,6 @@ extension ActiveApplicationDidChangeObserver {
     }
 }
 
-// MARK: -
-// MARK: BehaviorDidChange notfication
 @objc protocol BehaviorDidChangeObserver {
     func behaviorDidChangeForApp(notification: Notification)
 }
@@ -77,8 +75,6 @@ extension BehaviorDidChangePoster {
     }
 }
 
-// MARK: -
-// MARK: SwitchMethodDidChange notification
 @objc protocol SwitchMethodDidChangeObserver {
     func switchMethodDidChange(notification: Notification)
 }
@@ -103,8 +99,6 @@ extension SwitchMethodDidChangePoster {
     }
 }
 
-// MARK: -
-// MARK: TriggerSectionVisibilityDidChange notification
 @objc protocol TriggerSectionVisibilityDidChangeObserver {
     func triggerSectionVisibilityDidChange(notification: Notification)
 }
@@ -129,8 +123,6 @@ extension TriggerSectionVisibilityDidChangePoster {
     }
 }
 
-// MARK: -
-// MARK: Menu control notifications
 @objc protocol MenuControlObserver {
     func menuNeedsToOpen(notification: Notification)
     func menuNeedsToClose(notification: Notification)

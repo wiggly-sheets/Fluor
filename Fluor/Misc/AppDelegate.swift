@@ -31,9 +31,7 @@ import Cocoa
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
-    // Main.xib creates the delegate as a top-level object, while
-    // NSApplication.delegate is non-owning. Retain that legacy nib-created
-    // delegate for the lifetime of the application.
+    // Retain the nib-created delegate because NSApplication.delegate is non-owning.
     private static var retainedInstance: AppDelegate?
 
     let statusMenuController: StatusMenuController = .init()
@@ -60,7 +58,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
         ValueTransformer.setValueTransformer(RuleValueTransformer(), forName: NSValueTransformerName("RuleValueTransformer"))
         
-        // Check accessibility
         if !AXIsProcessTrusted() && !AppManager.default.hasAlreadyAnsweredAccessibility {
             let options : NSDictionary = [kAXTrustedCheckOptionPrompt.takeRetainedValue(): true]
             AXIsProcessTrustedWithOptions(options)
@@ -76,10 +73,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         self.loadMainMenu()
     }
 
-    /// The Tahoe build uses a fresh bundle identity because menu-bar managers
-    /// can persist a bundle-wide hidden state for the abandoned release. Keep
-    /// the user's rules and behavior settings, but let macOS request a fresh
-    /// accessibility grant and never import the stale status-item placement.
+    // Do not migrate stale status-item placement from the prior bundle identity.
     private func migrateLegacyPreferences() {
         let defaults = UserDefaults.standard
         guard defaults.object(forKey: legacyPreferencesMigrationKey) == nil else { return }

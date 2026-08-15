@@ -65,7 +65,6 @@ class BehaviorController: NSObject, BehaviorDidChangeObserver, DefaultModeViewCo
         guard !AppManager.default.isDisabled else { return }
         if let currentApp = NSWorkspace.shared.frontmostApplication, let id = currentApp.bundleIdentifier ?? currentApp.executableURL?.lastPathComponent {
             self.adaptModeForApp(withId: id)
-//            self.updateAppBehaviorViewFor(app: currentApp, id: id)
         }
     }
     
@@ -102,8 +101,6 @@ class BehaviorController: NSObject, BehaviorDidChangeObserver, DefaultModeViewCo
         }
     }
     
-    // MARK: - ActiveApplicationDidChangeObserver
-    
     func activeApplicationDidChangw(notification: Notification) {
         self.adaptToAccessibilityTrust()
         guard let app = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication,
@@ -116,11 +113,6 @@ class BehaviorController: NSObject, BehaviorDidChangeObserver, DefaultModeViewCo
         }
     }
     
-    // MARK: - BehaviorDidChangeObserver
-    
-    /// React to the change of the function keys behavior for one app.
-    ///
-    /// - parameter notification: The notification.
     func behaviorDidChangeForApp(notification: Notification) {
         guard let id = notification.userInfo?["id"] as? String else { return }
         
@@ -128,8 +120,6 @@ class BehaviorController: NSObject, BehaviorDidChangeObserver, DefaultModeViewCo
             self.adaptModeForApp(withId: id)
         }
     }
-    
-    // MARK: - SwitchMethodDidChangeObserver
     
     func switchMethodDidChange(notification: Notification) {
         guard let userInfo = notification.userInfo, let method = userInfo["method"] as? SwitchMethod else { return }
@@ -147,8 +137,6 @@ class BehaviorController: NSObject, BehaviorDidChangeObserver, DefaultModeViewCo
         }
     }
     
-    // MARK: - DefaultModeViewControllerDelegate
-    
     func defaultModeController(_ controller: DefaultModeViewController, didChangeModeTo mode: FKeyMode) {
         switch self.switchMethod {
         case .window, .hybrid:
@@ -160,11 +148,6 @@ class BehaviorController: NSObject, BehaviorDidChangeObserver, DefaultModeViewCo
         }
     }
     
-    // MARK: - Private functions
-    
-    /// Disable this session's Fluor instance in order to prevent it from messing when potential other sessions' ones.
-    ///
-    /// - Parameter notification: The notification.
     @objc private func appMustSleep(notification: Notification) {
         do { try FKeyManager.setCurrentFKeyMode(self.onLaunchKeyboardMode) }
         catch { os_log("Unable to reset FKey mode to pre-launch mode", type: .error) }
@@ -172,15 +155,11 @@ class BehaviorController: NSObject, BehaviorDidChangeObserver, DefaultModeViewCo
     }
     
     
-    /// Reenable this session's Fluor instance.
-    ///
-    /// - Parameter notification: The notification.
     @objc private func appMustWake(notification: Notification) {
         self.changeKeyboard(mode: currentMode)
         self.applyAsObserver()
     }
     
-    /// Register self as an observer for some notifications.
     private func applyAsObserver() {
         if self.switchMethod != .key { self.startObservingBehaviorDidChange() }
         self.startObservingSwitchMethodDidChange()
@@ -189,7 +168,6 @@ class BehaviorController: NSObject, BehaviorDidChangeObserver, DefaultModeViewCo
         self.adaptToAccessibilityTrust()
     }
     
-    /// Unregister self as an observer for some notifications.
     private func resignAsObserver() {
         if self.switchMethod != .key { self.stopObservingBehaviorDidChange() }
         self.stopObservingSwitchMethodDidChange()
@@ -198,9 +176,6 @@ class BehaviorController: NSObject, BehaviorDidChangeObserver, DefaultModeViewCo
         self.stopMonitoringFlagKey()
     }
     
-    /// Set the function keys' behavior for the given app.
-    ///
-    /// - parameter id: The app's bundle id.
     private func adaptModeForApp(withId id: String) {
         guard self.switchMethod != .key else { return }
         let behavior = AppManager.default.behaviorForApp(id: id)

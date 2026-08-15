@@ -38,7 +38,6 @@ class ReleaseNotesViewController: NSViewController, WKNavigationDelegate {
         self.webView.load(request)
     }
     
-    // MARK: - WKNavigationDelegate
     
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         if navigationAction.navigationType == .linkActivated{
