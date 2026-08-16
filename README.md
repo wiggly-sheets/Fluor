@@ -1,6 +1,6 @@
 <div align="center">
 
-  <img src="resources/app-icon.png" width="128" alt="Fluor app icon" />
+  <img src="resources/app-icon-native.png" width="128" alt="Fluor app icon" />
 
   <h1>Fluor</h1>
 
