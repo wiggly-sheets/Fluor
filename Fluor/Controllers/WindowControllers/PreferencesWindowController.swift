@@ -36,6 +36,7 @@ final class PreferencesWindowController: NSWindowController, StoryboardInstantia
         super.windowDidLoad()
         
         let toolbar = window?.toolbar
-        toolbar?.insertItem(withItemIdentifier: .flexibleSpace, at: (toolbar?.items.count ?? 0) - 1)
+        let insertionIndex = max(0, (toolbar?.items.count ?? 0) - 1)
+        toolbar?.insertItem(withItemIdentifier: .flexibleSpace, at: insertionIndex)
     }
 }

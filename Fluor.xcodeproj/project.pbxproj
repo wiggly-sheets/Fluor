@@ -58,6 +58,27 @@
 		3FE7E0E31D7CBE1700DC754D /* AboutWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE7E0E11D7CBE1700DC754D /* AboutWindowController.swift */; };
 		3FE7E0EA1D7CC01B00DC754D /* RulesEditorWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE7E0E81D7CC01B00DC754D /* RulesEditorWindowController.swift */; };
 		3FF2410B1EDB4E0000E524CD /* SwitchMethodViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FF2410A1EDB4E0000E524CD /* SwitchMethodViewController.swift */; };
+		F10B00010000000000000001 /* KeyboardModePolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10B00020000000000000001 /* KeyboardModePolicy.swift */; };
+		F10B00030000000000000001 /* KeyboardShortcut.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10B00040000000000000001 /* KeyboardShortcut.swift */; };
+		F10B00050000000000000001 /* PreferenceMigration.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10B00060000000000000001 /* PreferenceMigration.swift */; };
+		F10B00070000000000000001 /* RuleRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10B00080000000000000001 /* RuleRegistry.swift */; };
+		F10B00090000000000000001 /* UserNotificationEnablement.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10B000A0000000000000001 /* UserNotificationEnablement.swift */; };
+		F10C00020000000000000001 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F10C00010000000000000001 /* XCTest.framework */; };
+		F10C00200000000000000001 /* AppSettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10C00100000000000000001 /* AppSettingsTests.swift */; };
+		F10C00210000000000000001 /* FKeyModeCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10C00110000000000000001 /* FKeyModeCoordinatorTests.swift */; };
+		F10C00220000000000000001 /* KeyboardModePolicyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10C00120000000000000001 /* KeyboardModePolicyTests.swift */; };
+		F10C00230000000000000001 /* KeyboardShortcutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10C00130000000000000001 /* KeyboardShortcutTests.swift */; };
+		F10C00240000000000000001 /* PreferenceMigrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10C00140000000000000001 /* PreferenceMigrationTests.swift */; };
+		F10C00250000000000000001 /* RuleRegistryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10C00150000000000000001 /* RuleRegistryTests.swift */; };
+		F10C00260000000000000001 /* UserNotificationEnablementTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10C00160000000000000001 /* UserNotificationEnablementTests.swift */; };
+		F10C00300000000000000001 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10A00080000000000000001 /* AppSettings.swift */; };
+		F10C00310000000000000001 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FC44EF91D7F169A0065D433 /* Enums.swift */; };
+		F10C00320000000000000001 /* KeyboardModePolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10B00020000000000000001 /* KeyboardModePolicy.swift */; };
+		F10C00330000000000000001 /* KeyboardShortcut.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10B00040000000000000001 /* KeyboardShortcut.swift */; };
+		F10C00340000000000000001 /* PreferenceMigration.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10B00060000000000000001 /* PreferenceMigration.swift */; };
+		F10C00350000000000000001 /* RuleRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10B00080000000000000001 /* RuleRegistry.swift */; };
+		F10C00360000000000000001 /* UserNotificationEnablement.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10B000A0000000000000001 /* UserNotificationEnablement.swift */; };
+		F10C00370000000000000001 /* FKeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FD0AFA523C62CD400DC9533 /* FKeyManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -130,6 +151,20 @@
 		3FE7E0E11D7CBE1700DC754D /* AboutWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutWindowController.swift; sourceTree = "<group>"; };
 		3FE7E0E81D7CC01B00DC754D /* RulesEditorWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RulesEditorWindowController.swift; sourceTree = "<group>"; };
 		3FF2410A1EDB4E0000E524CD /* SwitchMethodViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchMethodViewController.swift; sourceTree = "<group>"; };
+		F10B00020000000000000001 /* KeyboardModePolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardModePolicy.swift; sourceTree = "<group>"; };
+		F10B00040000000000000001 /* KeyboardShortcut.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardShortcut.swift; sourceTree = "<group>"; };
+		F10B00060000000000000001 /* PreferenceMigration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceMigration.swift; sourceTree = "<group>"; };
+		F10B00080000000000000001 /* RuleRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuleRegistry.swift; sourceTree = "<group>"; };
+		F10B000A0000000000000001 /* UserNotificationEnablement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserNotificationEnablement.swift; sourceTree = "<group>"; };
+		F10C00010000000000000001 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = System/Library/Frameworks/XCTest.framework; sourceTree = SDKROOT; };
+		F10C00030000000000000001 /* FluorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FluorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F10C00100000000000000001 /* AppSettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsTests.swift; sourceTree = "<group>"; };
+		F10C00110000000000000001 /* FKeyModeCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FKeyModeCoordinatorTests.swift; sourceTree = "<group>"; };
+		F10C00120000000000000001 /* KeyboardModePolicyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardModePolicyTests.swift; sourceTree = "<group>"; };
+		F10C00130000000000000001 /* KeyboardShortcutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardShortcutTests.swift; sourceTree = "<group>"; };
+		F10C00140000000000000001 /* PreferenceMigrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceMigrationTests.swift; sourceTree = "<group>"; };
+		F10C00150000000000000001 /* RuleRegistryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuleRegistryTests.swift; sourceTree = "<group>"; };
+		F10C00160000000000000001 /* UserNotificationEnablementTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserNotificationEnablementTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -137,6 +172,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F10C00400000000000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F10C00020000000000000001 /* XCTest.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -148,9 +191,14 @@
 			children = (
 				3F2FA4041D7A1F87003E2AD8 /* AppManager.swift */,
 				F10A00080000000000000001 /* AppSettings.swift */,
+				F10B00020000000000000001 /* KeyboardModePolicy.swift */,
+				F10B00040000000000000001 /* KeyboardShortcut.swift */,
+				F10B00060000000000000001 /* PreferenceMigration.swift */,
+				F10B00080000000000000001 /* RuleRegistry.swift */,
 				3F8F93BC1EEAF1EB00FCE91F /* RuleValueTransformer.swift */,
 				3FC44EF91D7F169A0065D433 /* Enums.swift */,
 				3FC44EFB1D7F16CB0065D433 /* Items.swift */,
+				F10B000A0000000000000001 /* UserNotificationEnablement.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -245,6 +293,7 @@
 		3F7291EC2025BD1E005C9B70 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F10C00010000000000000001 /* XCTest.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -253,6 +302,7 @@
 			isa = PBXGroup;
 			children = (
 				3FCD16A31D79793600C57B22 /* Fluor */,
+				F10C00040000000000000001 /* FluorTests */,
 				3F7291EC2025BD1E005C9B70 /* Frameworks */,
 				3FCD16A21D79793600C57B22 /* Products */,
 			);
@@ -262,6 +312,7 @@
 			isa = PBXGroup;
 			children = (
 				3FCD16A11D79793600C57B22 /* Fluor.app */,
+				F10C00030000000000000001 /* FluorTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -299,6 +350,20 @@
 			name = XIBs;
 			sourceTree = "<group>";
 		};
+		F10C00040000000000000001 /* FluorTests */ = {
+			isa = PBXGroup;
+			children = (
+				F10C00100000000000000001 /* AppSettingsTests.swift */,
+				F10C00110000000000000001 /* FKeyModeCoordinatorTests.swift */,
+				F10C00120000000000000001 /* KeyboardModePolicyTests.swift */,
+				F10C00130000000000000001 /* KeyboardShortcutTests.swift */,
+				F10C00140000000000000001 /* PreferenceMigrationTests.swift */,
+				F10C00150000000000000001 /* RuleRegistryTests.swift */,
+				F10C00160000000000000001 /* UserNotificationEnablementTests.swift */,
+			);
+			path = FluorTests;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -320,6 +385,25 @@
 			productName = Fluor;
 			productReference = 3FCD16A11D79793600C57B22 /* Fluor.app */;
 			productType = "com.apple.product-type.application";
+		};
+		F10C00500000000000000001 /* FluorTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F10C00600000000000000001 /* Build configuration list for PBXNativeTarget "FluorTests" */;
+			buildPhases = (
+				F10C00410000000000000001 /* Sources */,
+				F10C00400000000000000001 /* Frameworks */,
+				F10C00420000000000000001 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FluorTests;
+			packageProductDependencies = (
+			);
+			productName = FluorTests;
+			productReference = F10C00030000000000000001 /* FluorTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -344,6 +428,9 @@
 							};
 						};
 					};
+					F10C00500000000000000001 = {
+						CreatedOnToolsVersion = 26.0;
+					};
 				};
 			};
 			buildConfigurationList = 3FCD169C1D79793600C57B22 /* Build configuration list for PBXProject "Fluor" */;
@@ -364,6 +451,7 @@
 			projectRoot = "";
 			targets = (
 				3FCD16A01D79793600C57B22 /* Fluor */,
+				F10C00500000000000000001 /* FluorTests */,
 			);
 		};
 /* End PBXProject section */
@@ -386,6 +474,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F10C00420000000000000001 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 
@@ -395,6 +490,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				3F4E36C32111EF7A00CDCAA0 /* CheckableMenuItem.swift in Sources */,
+				F10B00010000000000000001 /* KeyboardModePolicy.swift in Sources */,
+				F10B00030000000000000001 /* KeyboardShortcut.swift in Sources */,
+				F10B00050000000000000001 /* PreferenceMigration.swift in Sources */,
+				F10B00070000000000000001 /* RuleRegistry.swift in Sources */,
+				F10B00090000000000000001 /* UserNotificationEnablement.swift in Sources */,
 				3F2571F41FDBD43500020194 /* TableViewContentAnimator.swift in Sources */,
 				3F7C349C1ED5EBAA0020C538 /* BehaviorController.swift in Sources */,
 				3F2CAE6C246438590046D711 /* LinkButton.swift in Sources */,
@@ -435,6 +535,28 @@
 				3F2FA4051D7A1F87003E2AD8 /* AppManager.swift in Sources */,
 				3F6D52CE20696E2100517E57 /* PoppingLinkButton.swift in Sources */,
 				3FC44EFA1D7F169A0065D433 /* Enums.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F10C00410000000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F10C00200000000000000001 /* AppSettingsTests.swift in Sources */,
+				F10C00210000000000000001 /* FKeyModeCoordinatorTests.swift in Sources */,
+				F10C00220000000000000001 /* KeyboardModePolicyTests.swift in Sources */,
+				F10C00230000000000000001 /* KeyboardShortcutTests.swift in Sources */,
+				F10C00240000000000000001 /* PreferenceMigrationTests.swift in Sources */,
+				F10C00250000000000000001 /* RuleRegistryTests.swift in Sources */,
+				F10C00260000000000000001 /* UserNotificationEnablementTests.swift in Sources */,
+				F10C00300000000000000001 /* AppSettings.swift in Sources */,
+				F10C00310000000000000001 /* Enums.swift in Sources */,
+				F10C00320000000000000001 /* KeyboardModePolicy.swift in Sources */,
+				F10C00330000000000000001 /* KeyboardShortcut.swift in Sources */,
+				F10C00340000000000000001 /* PreferenceMigration.swift in Sources */,
+				F10C00350000000000000001 /* RuleRegistry.swift in Sources */,
+				F10C00360000000000000001 /* UserNotificationEnablement.swift in Sources */,
+				F10C00370000000000000001 /* FKeyManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -635,11 +757,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Fluor/Fluor.entitlements;
-				CODE_SIGN_IDENTITY = "Mac Developer";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 2700;
-				DEVELOPMENT_TEAM = Q2E884V952;
 				ENABLE_HARDENED_RUNTIME = YES;
 				EXTRACT_APP_INTENTS_METADATA = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -669,11 +790,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Fluor/Fluor.entitlements;
-				CODE_SIGN_IDENTITY = "Mac Developer";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 2700;
-				DEVELOPMENT_TEAM = Q2E884V952;
 				ENABLE_HARDENED_RUNTIME = YES;
 				EXTRACT_APP_INTENTS_METADATA = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -698,6 +818,48 @@
 			};
 			name = Release;
 		};
+		F10C00610000000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
+				ENABLE_TESTABILITY = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zm.fluor.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		F10C00620000000000000001 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zm.fluor.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -715,6 +877,15 @@
 			buildConfigurations = (
 				3FCD16AF1D79793600C57B22 /* Debug */,
 				3FCD16B01D79793600C57B22 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F10C00600000000000000001 /* Build configuration list for PBXNativeTarget "FluorTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F10C00610000000000000001 /* Debug */,
+				F10C00620000000000000001 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

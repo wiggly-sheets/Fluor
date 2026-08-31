@@ -75,18 +75,24 @@ final class UserNotificationEnablementViewController: NSViewController, Storyboa
             everytime = activeAppSwitch &&  activeAppFnKey &&  globalFnKey
         }
         guard !isShownInAlert else { return }
-        self.checkAuthorizations()
+        let selection = UserNotificationEnablement.from(self)
+        guard selection != .none else {
+            AppManager.default.userNotificationEnablement = .none
+            return
+        }
+        checkAuthorizations(selection: selection)
     }
     
     private func adaptStackConstraints() {
         stackViewConstraints.forEach { $0.constant = isShownInAlert ? 2 : 0 }
     }
     
-    private func checkAuthorizations() {
+    private func checkAuthorizations(selection: UserNotificationEnablement) {
         UserNotificationHelper.askUser { (isAuthorized) in
             if isAuthorized {
-                AppManager.default.userNotificationEnablement = .from(self)
+                AppManager.default.userNotificationEnablement = selection
             } else {
+                AppManager.default.userNotificationEnablement = .none
                 UserNotificationEnablement.none.apply(to: self)
             }
         }
@@ -98,5 +104,22 @@ final class UserNotificationEnablementViewController: NSViewController, Storyboa
         }
         
         return .init(["activeAppSwitch", "activeAppFnKey", "globalFnKey", "everytime"])
+    }
+}
+
+extension UserNotificationEnablement {
+    static func from(_ viewController: UserNotificationEnablementViewController) -> Self {
+        guard !viewController.everytime else { return .all }
+        return Self.none
+            .union(viewController.activeAppSwitch ? .appSwitch : .none)
+            .union(viewController.activeAppFnKey ? .appKey : .none)
+            .union(viewController.globalFnKey ? .globalKey : .none)
+    }
+
+    func apply(to viewController: UserNotificationEnablementViewController) {
+        viewController.everytime = self == .all
+        viewController.activeAppSwitch = contains(.appSwitch)
+        viewController.activeAppFnKey = contains(.appKey)
+        viewController.globalFnKey = contains(.globalKey)
     }
 }

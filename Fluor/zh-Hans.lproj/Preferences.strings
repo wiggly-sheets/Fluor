@@ -115,3 +115,8 @@
 
 /* Class = "NSButtonCell"; title = "Automaticaly check for updates"; ObjectID = "xgt-53-WGT"; */
 "xgt-53-WGT.title" = "自动检查更新";
+
+"HKY-SC-TXT.title" = "键盘快捷键";
+"AX-PERM-TEXT.title" = "快捷键的键盘访问权限";
+"AX-PERM-CELL.title" = "授予访问权限…";
+"HID-MB-ADVCELL.title" = "隐藏菜单栏项目";

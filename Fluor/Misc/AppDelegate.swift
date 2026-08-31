@@ -55,10 +55,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
         ValueTransformer.setValueTransformer(RuleValueTransformer(), forName: NSValueTransformerName("RuleValueTransformer"))
         
-        if AppManager.default.lastRunVersion != self.getBundleVersion() {
-            AppManager.default.lastRunVersion = self.getBundleVersion()
-        }
-        
         UserNotificationHelper.askUserAtLaunch()
         
         self.loadMainMenu()
@@ -71,16 +67,20 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         return true
     }
 
+    func applicationWillTerminate(_ notification: Notification) {
+        statusMenuController.performTerminationCleaning()
+        if let activity = ongoingMenuBarActivity {
+            ProcessInfo.processInfo.endActivity(activity)
+            ongoingMenuBarActivity = nil
+        }
+    }
+
     private func loadMainMenu() {
         guard self.mainMenuTopLevelObjects.isEmpty else { return }
         let nib = NSNib(nibNamed: "MainMenu", bundle: nil)
         var topLevelObjects: NSArray?
         nib?.instantiate(withOwner: self.statusMenuController, topLevelObjects: &topLevelObjects)
         self.mainMenuTopLevelObjects = topLevelObjects as? [Any] ?? []
-    }
-    
-    private func getBundleVersion() -> String {
-        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as! String
     }
     
     func windowWillClose(_ notification: Notification) {

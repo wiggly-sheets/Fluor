@@ -63,6 +63,7 @@ class RunningAppsViewController: NSViewController, NSTableViewDelegate {
             let url = app.bundleURL ?? app.executableURL else { return }
         let isApp = app.activationPolicy == .regular
         guard self.showAll || isApp else { return }
+        guard !runningAppsArray.contains(where: { $0.pid == app.processIdentifier }) else { return }
         let behavior = AppManager.default.behaviorForApp(id: id)
         let item = RunningApp(id: id, url: url, behavior: behavior, pid: app.processIdentifier, isApp: isApp)
         

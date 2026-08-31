@@ -38,12 +38,12 @@ extension Notification.Name {
 }
 
 @objc protocol ActiveApplicationDidChangeObserver {
-    func activeApplicationDidChangw(notification: Notification)
+    func activeApplicationDidChange(notification: Notification)
 }
 
 extension ActiveApplicationDidChangeObserver {
     func startObservingActiveApplicationDidChange() {
-        NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(activeApplicationDidChangw(notification:)), name: NSWorkspace.didActivateApplicationNotification, object: nil)
+        NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(activeApplicationDidChange(notification:)), name: NSWorkspace.didActivateApplicationNotification, object: nil)
     }
     
     func stopObservingActiveApplicationDidChange() {

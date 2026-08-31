@@ -64,3 +64,5 @@
 /* Class = "NSSegmentedCell"; Vfh-zJ-Axi.ibShadowedToolTips[1] = "Function keys mode"; ObjectID = "Vfh-zJ-Axi"; */
 "Vfh-zJ-Axi.ibShadowedToolTips[1]" = "Switch to function key mode";
 
+"Q1f-rE-0QS.title" = "Basculer entre touches de fonction et touches média";
+"HID-MB-ITEM.title" = "Masquer l’élément de la barre des menus";

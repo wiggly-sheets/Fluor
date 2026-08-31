@@ -91,11 +91,11 @@ class CurrentAppViewController: NSViewController, BehaviorDidChangeObserver, Act
         if let name = app.localizedName {
             appNameLabel.stringValue = name
         } else {
-            appNameLabel.stringValue = "An app"
+            appNameLabel.stringValue = NSLocalizedString("An app", comment: "")
         }
     }
     
-    func activeApplicationDidChangw(notification: Notification) {
+    func activeApplicationDidChange(notification: Notification) {
         guard let app = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication else { return }
         self.setCurrent(app: app)
     }

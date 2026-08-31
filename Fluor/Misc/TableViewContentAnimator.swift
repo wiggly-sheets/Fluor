@@ -30,13 +30,15 @@
 import Cocoa
 
 final class TableViewContentAnimator<ItemType: AnyObject>: NSObject, NSTableViewDataSource {
-    @objc weak dynamic var tableView: NSTableView!
-    @objc weak dynamic var arrayController: NSArrayController!
+    @objc weak dynamic var tableView: NSTableView?
+    @objc weak dynamic var arrayController: NSArrayController?
     
     var tableInsertAnimation: NSTableView.AnimationOptions
     var tableRemoveAnimation: NSTableView.AnimationOptions
     
-    private var arrangedObjects: [ItemType]? { return arrayController.arrangedObjects as? [ItemType] }
+    private var arrangedObjects: [ItemType] {
+        arrayController?.arrangedObjects as? [ItemType] ?? []
+    }
     
     private var shadowObjects: [ItemType] = []
     private var animated: Bool = true
@@ -50,24 +52,42 @@ final class TableViewContentAnimator<ItemType: AnyObject>: NSObject, NSTableView
         self.tableInsertAnimation = [.effectFade]
         self.tableRemoveAnimation = [.effectFade]
         super.init()
-        self.tableView.dataSource = self
+        self.tableView?.dataSource = self
         self.configureController()
     }
     
     deinit {
-        arrayController.removeObserver(self, forKeyPath: "arrangedObjects")
+        arrayController?.removeObserver(self, forKeyPath: "arrangedObjects")
     }
     
     private func configureController() {
-        arrayController.addObserver(self, forKeyPath: "arrangedObjects", options: [], context: nil)
-        self.shadowObjects = arrayController.arrangedObjects as! [ItemType]
+        arrayController?.addObserver(self, forKeyPath: "arrangedObjects", options: [], context: nil)
+        shadowObjects = arrangedObjects
     }
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        guard arrayController.isEqual(object), keyPath == "arrangedObjects", let newShadowObjects = self.arrangedObjects else { return }
+        guard let arrayController,
+              arrayController.isEqual(object),
+              keyPath == "arrangedObjects" else { return }
+        let newShadowObjects = arrangedObjects
         let itemsToKeep = self.intersection(between: self.shadowObjects, and: newShadowObjects)
         let itemsToRemove = self.substract(itemsToKeep, from: self.shadowObjects)
         let itemsToAdd = self.substract(itemsToKeep, from: newShadowObjects)
+        let oldRetainedOrder = shadowObjects.filter { oldItem in
+            itemsToKeep.contains { oldItem === $0 }
+        }
+        let newRetainedOrder = newShadowObjects.filter { newItem in
+            itemsToKeep.contains { newItem === $0 }
+        }
+        let retainedOrderChanged = zip(oldRetainedOrder, newRetainedOrder).contains { pair in
+            pair.0 !== pair.1
+        }
+
+        if retainedOrderChanged {
+            shadowObjects = newShadowObjects
+            tableView?.reloadData()
+            return
+        }
         let removeSet = IndexSet(itemsToRemove.compactMap { item in
             self.shadowObjects.firstIndex(where: { item === $0 })
         })
@@ -77,10 +97,10 @@ final class TableViewContentAnimator<ItemType: AnyObject>: NSObject, NSTableView
         
         self.shadowObjects = newShadowObjects
         
-        tableView.beginUpdates()
+        tableView?.beginUpdates()
         self.removeRows(at: removeSet)
         self.insertRows(at: addSet)
-        tableView.endUpdates()
+        tableView?.endUpdates()
     }
     
     func performUnanimated(_ block: () -> ()) {
@@ -99,11 +119,11 @@ final class TableViewContentAnimator<ItemType: AnyObject>: NSObject, NSTableView
     
     
     private func insertRows(at indexSet: IndexSet) {
-        tableView.insertRows(at: indexSet, withAnimation: self.actualInsertAnimation)
+        tableView?.insertRows(at: indexSet, withAnimation: self.actualInsertAnimation)
     }
     
     private func removeRows(at indexSet: IndexSet) {
-        tableView.removeRows(at: indexSet, withAnimation: self.actualRemoveAnimation)
+        tableView?.removeRows(at: indexSet, withAnimation: self.actualRemoveAnimation)
     }
     
     private func intersection(between lhs: [ItemType], and rhs: [ItemType]) -> [ItemType] {
@@ -123,10 +143,10 @@ final class TableViewContentAnimator<ItemType: AnyObject>: NSObject, NSTableView
     
     
     func numberOfRows(in tableView: NSTableView) -> Int {
-        return arrangedObjects?.count ?? 0
+        arrangedObjects.count
     }
     
     func tableView(_ tableView: NSTableView, objectValueFor tableColumn: NSTableColumn?, row: Int) -> Any? {
-        return arrangedObjects?[row]
+        arrangedObjects.indices.contains(row) ? arrangedObjects[row] : nil
     }
 }

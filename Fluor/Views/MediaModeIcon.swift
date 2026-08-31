@@ -3,8 +3,12 @@ import Cocoa
 enum MediaModeIcon {
     static func image(usesBackground: Bool) -> NSImage {
         let configuration = NSImage.SymbolConfiguration(pointSize: 15, weight: .medium)
-        let globe = NSImage(systemSymbolName: "globe", accessibilityDescription: "Media key mode")!
-            .withSymbolConfiguration(configuration)!
+        guard let globe = NSImage(
+            systemSymbolName: "globe",
+            accessibilityDescription: NSLocalizedString("Media keys", comment: "")
+        )?.withSymbolConfiguration(configuration) else {
+            return NSImage(size: .init(width: 18, height: 18))
+        }
         let image = NSImage(size: .init(width: 18, height: 18))
         image.lockFocus()
 

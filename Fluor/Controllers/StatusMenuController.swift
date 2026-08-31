@@ -38,7 +38,10 @@ class StatusMenuController: NSObject, NSMenuDelegate, NSWindowDelegate, MenuCont
     private var aboutController: AboutWindowController?
     private var preferencesController: PreferencesWindowController?
     private var runningAppsController: RunningAppWindowController?
-    
+
+    private var displayedMode: FKeyMode = .media
+    private var applicationIsEnabled = true
+
     var statusItem: NSStatusItem!
 
     override func awakeFromNib() {
@@ -82,6 +85,7 @@ class StatusMenuController: NSObject, NSMenuDelegate, NSWindowDelegate, MenuCont
     }
     
     private func setupStatusMenu() {
+        applicationIsEnabled = !AppManager.default.isDisabled
         self.statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         self.statusItem.autosaveName = "FluorStatusItem"
         self.statusItem.isVisible = !AppManager.default.hideMenuBarItem
@@ -96,20 +100,39 @@ class StatusMenuController: NSObject, NSMenuDelegate, NSWindowDelegate, MenuCont
     func setStatusImage(_ image: NSImage) {
         statusItem.button?.title = ""
         statusItem.button?.image = image
-        statusItem.button?.toolTip = "Fluor"
-        statusItem.button?.setAccessibilityLabel("Fluor")
+    }
+
+    func setStatus(mode: FKeyMode, applicationIsEnabled: Bool) {
+        displayedMode = mode
+        self.applicationIsEnabled = applicationIsEnabled
+        adaptStatusMenuIcon()
     }
 
     private func adaptStatusMenuIcon() {
-        let disabledApp = AppManager.default.isDisabled
         let usesLightIcon = AppManager.default.useLightIcon
         let image: NSImage
-        switch (disabledApp, usesLightIcon) {
-        case (false, let usesLightIcon): image = MediaModeIcon.image(usesBackground: !usesLightIcon)
-        case (true, false): image = #imageLiteral(resourceName: "IconDisabled")
-        case (true, true): image = #imageLiteral(resourceName: "LighIconDisabled")
+        if applicationIsEnabled {
+            switch displayedMode {
+            case .media:
+                image = MediaModeIcon.image(usesBackground: !usesLightIcon)
+            case .function:
+                image = usesLightIcon
+                    ? #imageLiteral(resourceName: "OtherMode")
+                    : #imageLiteral(resourceName: "IconOtherMode")
+            }
+        } else {
+            image = usesLightIcon
+                ? #imageLiteral(resourceName: "LighIconDisabled")
+                : #imageLiteral(resourceName: "IconDisabled")
         }
         setStatusImage(image)
+
+        let stateDescription = applicationIsEnabled
+            ? displayedMode.label
+            : NSLocalizedString("Disabled", comment: "")
+        statusItem.button?.toolTip = "Fluor — \(stateDescription)"
+        statusItem.button?.setAccessibilityLabel("Fluor")
+        statusItem.button?.setAccessibilityValue(stateDescription)
     }
     
     private func startObservingUsesLightIcon() {
@@ -147,12 +170,14 @@ class StatusMenuController: NSObject, NSMenuDelegate, NSWindowDelegate, MenuCont
     
     @IBAction func editRules(_ sender: AnyObject) {
         guard rulesController == nil else {
-            rulesController?.window?.orderFrontRegardless()
+            rulesController?.window?.makeKeyAndOrderFront(self)
+            NSApp.activate(ignoringOtherApps: true)
             return
         }
         rulesController = RulesEditorWindowController.instantiate()
         rulesController?.window?.delegate = self
-        rulesController?.window?.orderFrontRegardless()
+        rulesController?.window?.makeKeyAndOrderFront(self)
+        NSApp.activate(ignoringOtherApps: true)
     }
     
     @IBAction func showAbout(_ sender: AnyObject) {
@@ -189,22 +214,19 @@ class StatusMenuController: NSObject, NSMenuDelegate, NSWindowDelegate, MenuCont
     
     @IBAction func showRunningApps(_ sender: AnyObject) {
         guard runningAppsController == nil else {
-            runningAppsController?.window?.orderFrontRegardless()
+            runningAppsController?.window?.makeKeyAndOrderFront(self)
+            NSApp.activate(ignoringOtherApps: true)
             return
         }
         runningAppsController = RunningAppWindowController.instantiate()
         runningAppsController?.window?.delegate = self
-        runningAppsController?.window?.orderFrontRegardless()
+        runningAppsController?.window?.makeKeyAndOrderFront(self)
+        NSApp.activate(ignoringOtherApps: true)
     }
     
     
     @IBAction func toggleApplicationState(_ sender: NSMenuItem) {
         let disabled = sender.state == .off
-        if disabled {
-            setStatusImage(AppManager.default.useLightIcon ? #imageLiteral(resourceName: "LighIconDisabled") : #imageLiteral(resourceName: "IconDisabled"))
-        } else {
-            setStatusImage(MediaModeIcon.image(usesBackground: !AppManager.default.useLightIcon))
-        }
         self.behaviorController.setApplicationIsEnabled(!disabled)
     }
 
@@ -213,9 +235,10 @@ class StatusMenuController: NSObject, NSMenuDelegate, NSWindowDelegate, MenuCont
     }
     
     @IBAction func quitApplication(_ sender: AnyObject) {
-        self.stopObservingUsesLightIcon()
-        NSWorkspace.shared.notificationCenter.removeObserver(self)
-        self.behaviorController.performTerminationCleaning()
         NSApp.terminate(self)
+    }
+
+    func performTerminationCleaning() {
+        behaviorController?.performTerminationCleaning()
     }
 }

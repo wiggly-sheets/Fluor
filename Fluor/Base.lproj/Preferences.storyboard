@@ -140,7 +140,7 @@
                                                     </segments>
                                                 </segmentedCell>
                                                 <connections>
-                                                    <binding destination="XlE-y8-iHG" name="selectedIndex" keyPath="values.DefaultKeyboardState" id="5ak-8o-KE6"/>
+                                                    <binding destination="XlE-y8-iHG" name="selectedIndex" keyPath="values.DefaultKeyboardMode" id="5ak-8o-KE6"/>
                                                 </connections>
                                             </segmentedControl>
                                         </subviews>

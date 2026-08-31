@@ -15,8 +15,17 @@ final class HotkeyRecorderButton: NSButton {
 
     override func mouseDown(with event: NSEvent) {
         isRecording = true
-        title = "Press shortcut…"
+        title = NSLocalizedString("Press shortcut…", comment: "")
         window?.makeFirstResponder(self)
+    }
+
+    override func resignFirstResponder() -> Bool {
+        let didResign = super.resignFirstResponder()
+        if didResign && isRecording {
+            isRecording = false
+            updateTitle()
+        }
+        return didResign
     }
 
     override func keyDown(with event: NSEvent) {
@@ -30,7 +39,7 @@ final class HotkeyRecorderButton: NSButton {
             return
         }
 
-        let modifiers = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
+        let modifiers = KeyboardShortcut.normalizedModifiers(event.modifierFlags)
         guard modifiers.intersection([.command, .option, .control]) != [] else {
             NSSound.beep()
             return
@@ -64,7 +73,9 @@ final class HotkeyRecorderButton: NSButton {
     }
 
     private func updateTitle() {
-        title = AppManager.default.toggleShortcutEnabled ? AppManager.default.toggleShortcutDisplay : "Set shortcut"
+        title = AppManager.default.toggleShortcutEnabled
+            ? AppManager.default.toggleShortcutDisplay
+            : NSLocalizedString("Set shortcut", comment: "")
     }
 
     private func shortcutDisplay(for event: NSEvent, modifiers: NSEvent.ModifierFlags) -> String {

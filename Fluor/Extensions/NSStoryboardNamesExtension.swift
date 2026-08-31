@@ -34,5 +34,4 @@ extension NSStoryboard.Name {
     static let runningApps = "RunningApps"
     static let rulesEditor = "RulesEditor"
     static let about = "About"
-    static let welcome = "Welcome"
 }

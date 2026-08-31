@@ -114,3 +114,8 @@
 
 /* Class = "NSButtonCell"; title = "Automaticaly check for updates"; ObjectID = "xgt-53-WGT"; */
 "xgt-53-WGT.title" = "Vérification automatique des mises à jour";
+
+"HKY-SC-TXT.title" = "Raccourci clavier";
+"AX-PERM-TEXT.title" = "Accès au clavier pour les raccourcis";
+"AX-PERM-CELL.title" = "Autoriser l’accès…";
+"HID-MB-ADVCELL.title" = "Masquer l’élément de la barre des menus";

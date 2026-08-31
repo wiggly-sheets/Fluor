@@ -36,12 +36,16 @@ class AboutViewController: NSViewController {
         super.viewDidLoad()
         
         let bundleVersion = getBundleVersion()
-        versionLabel.stringValue = "Version \(bundleVersion.version) build \(bundleVersion.build)"
+        versionLabel.stringValue = String(
+            format: NSLocalizedString("Version %@ (build %@)", comment: ""),
+            bundleVersion.version,
+            bundleVersion.build
+        )
     }
     
     private func getBundleVersion() -> (version: String, build: String) {
-        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as! String
-        let build = Bundle.main.infoDictionary?[kCFBundleVersionKey as String] as! String
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "—"
+        let build = Bundle.main.infoDictionary?[kCFBundleVersionKey as String] as? String ?? "—"
         
         return (version, build)
     }

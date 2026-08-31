@@ -70,3 +70,6 @@
 
 /* Class = "NSMenuItem"; title = "Current application"; ObjectID = "ulH-vE-QEF"; */
 "ulH-vE-QEF.title" = "当前应用";
+
+"Q1f-rE-0QS.title" = "切换功能键/媒体键";
+"HID-MB-ITEM.title" = "隐藏菜单栏项目";

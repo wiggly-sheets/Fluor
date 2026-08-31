@@ -32,14 +32,19 @@ class Item: NSObject, Identifiable {
     var notificationSource: NotificationSource { .undefined }
     
     let id: String
-    @objc let url: URL
+    @objc dynamic var url: URL
     @objc dynamic var behavior: AppBehavior 
     
     @objc var icon: NSImage { NSWorkspace.shared.icon(forFile: self.url.path) }
     @objc var name: String { Bundle(path: self.url.path)?.localizedInfoDictionary?["CFBundleName"] as? String ?? self.url.deletingPathExtension().lastPathComponent }
     
     override var hash: Int {
-        self.url.hashValue
+        id.hashValue
+    }
+
+    override func isEqual(_ object: Any?) -> Bool {
+        guard let other = object as? Item else { return false }
+        return id == other.id
     }
     
     init(id: String, url: URL, behavior: AppBehavior) {
@@ -57,6 +62,11 @@ final class RunningApp: Item, BehaviorDidChangeObserver {
     
     override var hash: Int {
         Int(self.pid)
+    }
+
+    override func isEqual(_ object: Any?) -> Bool {
+        guard let other = object as? RunningApp else { return false }
+        return pid == other.pid
     }
     
     init(id: String, url: URL, behavior: AppBehavior, pid: pid_t, isApp: Bool) {
@@ -83,18 +93,7 @@ final class RunningApp: Item, BehaviorDidChangeObserver {
 final class Rule: Item {
     override var notificationSource: NotificationSource { .rule }
     
-    override var hash: Int {
-        self.url.hashValue
-    }
-    
-    
-    var storedValue: [String: Any] {
-        ["id": self.id, "path": self.url.path, "behavior": self.behavior.rawValue]
-    }
-    
-    convenience init?(storedValue object: [String: Any]) {
-        guard let id = object["id"] as? String, let path = object["path"] as? String, let rawBehavior = object["behavior"] as? Int, let behavior = AppBehavior(rawValue: rawBehavior) else { return nil }
-        let url = URL(fileURLWithPath: path)
-        self.init(id: id, url: url, behavior: behavior)
+    convenience init(record: RuleRecord) {
+        self.init(id: record.id, url: record.url, behavior: record.behavior)
     }
 }

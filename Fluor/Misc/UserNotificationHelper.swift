@@ -31,8 +31,6 @@ import Cocoa
 import UserNotifications
 
 enum UserNotificationHelper {
-    static var holdNextModeChangedNotification: Bool = false
-    
     static func askUserAtLaunch() {
         guard !AppManager.default.hideNotificationAuthorizationPopup else { return }
         askOnStartupIfNeeded()
@@ -43,10 +41,6 @@ enum UserNotificationHelper {
     }
     
     static func sendModeChangedTo(_ mode: FKeyMode) {
-        guard !holdNextModeChangedNotification else {
-            holdNextModeChangedNotification.toggle()
-            return
-        }
         guard AppManager.default.userNotificationEnablement.contains(.appSwitch) else { return }
         let title = NSLocalizedString("F-Keys mode changed", comment: "")
         let message = mode.label
@@ -77,13 +71,17 @@ enum UserNotificationHelper {
         content.subtitle = msg
     
         let req = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
-        UNUserNotificationCenter.current().add(req)
+        UNUserNotificationCenter.current().add(req) { error in
+            if let error {
+                NSLog("Unable to deliver Fluor notification: %@", error.localizedDescription)
+            }
+        }
     }
     
     static func ifAuthorized(perform action: @escaping () -> (), else unauthorizedAction: @escaping () -> ()) {
         UNUserNotificationCenter.current().getNotificationSettings { settings in
             DispatchQueue.main.async {
-                guard settings.authorizationStatus == .authorized else { return unauthorizedAction() }
+                guard settings.authorizationStatus.allowsDelivery else { return unauthorizedAction() }
                 action()
             }
         }
@@ -93,7 +91,7 @@ enum UserNotificationHelper {
         UNUserNotificationCenter.current().getNotificationSettings { (settings) in
             DispatchQueue.main.async {
                 guard settings.authorizationStatus != .denied,
-                      settings.authorizationStatus != .authorized else { return }
+                      !settings.authorizationStatus.allowsDelivery else { return }
                 
                 let alert = makeAlert(suppressible: true)
                 let avc = makeAccessoryView()
@@ -127,7 +125,7 @@ enum UserNotificationHelper {
     private static func askIfNeeded(then action: @escaping (Bool) -> ()) {
         UNUserNotificationCenter.current().getNotificationSettings { (settings) in
             DispatchQueue.main.async {
-                guard settings.authorizationStatus != .authorized else { return action(true) }
+                guard !settings.authorizationStatus.allowsDelivery else { return action(true) }
                 if settings.authorizationStatus == .denied {
                     if retryOnDenied() {
                         askIfNeeded(then: action)
@@ -157,7 +155,7 @@ enum UserNotificationHelper {
         let alert = NSAlert()
         alert.alertStyle = .critical
         alert.messageText = NSLocalizedString("Notifications are not allowed from Fluor", comment: "")
-        alert.informativeText = "To allow notifications from Fluor follow these steps:"
+        alert.informativeText = NSLocalizedString("To allow notifications from Fluor, follow these steps:", comment: "")
         alert.addButton(withTitle: NSLocalizedString("I allowed it", comment: ""))
         alert.addButton(withTitle: NSLocalizedString("I won't allow it", comment: ""))
         
@@ -173,14 +171,14 @@ enum UserNotificationHelper {
     private static func makeAlert(suppressible: Bool = false) -> NSAlert {
         let alert = NSAlert()
         alert.icon = NSImage(imageLiteralResourceName: "QuestionMark")
-        alert.messageText = NSLocalizedString("Enable notifications ?", comment: "")
+        alert.messageText = NSLocalizedString("Enable notifications?", comment: "")
         alert.informativeText = NSLocalizedString("Fluor can send notifications when the F-Keys mode changes.", comment: "")
         if suppressible {
             alert.showsSuppressionButton = true
             alert.suppressionButton?.title = NSLocalizedString("Don't ask me on startup again", comment: "")
             alert.suppressionButton?.state = .off
         }
-        alert.addButton(withTitle: NSLocalizedString("Enable notfications", comment: ""))
+        alert.addButton(withTitle: NSLocalizedString("Enable notifications", comment: ""))
         alert.addButton(withTitle: NSLocalizedString("Don't enable notifications", comment: ""))
         
         return alert
@@ -191,5 +189,18 @@ enum UserNotificationHelper {
         avc.isShownInAlert = true
         
         return avc
+    }
+}
+
+private extension UNAuthorizationStatus {
+    var allowsDelivery: Bool {
+        switch self {
+        case .authorized, .provisional, .ephemeral:
+            return true
+        case .notDetermined, .denied:
+            return false
+        @unknown default:
+            return false
+        }
     }
 }

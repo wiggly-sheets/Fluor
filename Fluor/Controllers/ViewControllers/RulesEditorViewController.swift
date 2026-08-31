@@ -79,6 +79,7 @@ class RulesEditorViewController: NSViewController, BehaviorDidChangeObserver {
             if case .inferred = behavior {
                 itemsArrayController.removeObject(item)
             } else {
+                item.url = url
                 item.behavior = behavior
             }
         } else if behavior != .inferred {
@@ -93,15 +94,30 @@ class RulesEditorViewController: NSViewController, BehaviorDidChangeObserver {
         openPanel.allowedContentTypes = [.application]
         openPanel.canChooseDirectories = false
         openPanel.directoryURL = URL(fileURLWithPath: "/Applications")
-        openPanel.runModal()
-        let items = openPanel.urls.map { (url) -> Rule in
-            let bundle = Bundle(url: url)!
-            let id = bundle.bundleIdentifier!
-            
-            AppManager.default.propagate(behavior: .media, forApp: id, at: url, from: .rule)
-            return Rule(id: id, url: url, behavior: .media)
+        guard openPanel.runModal() == .OK else { return }
+
+        let applications = openPanel.urls.compactMap { url -> (id: String, url: URL)? in
+            guard let id = Bundle(url: url)?.bundleIdentifier else { return nil }
+            return (id, url)
         }
-        rulesSet.formUnion(items)
+
+        if applications.count != openPanel.urls.count {
+            AppErrorManager.showError(
+                withReason: NSLocalizedString("One or more selected applications do not have a bundle identifier.", comment: "")
+            )
+        }
+
+        for application in applications {
+            let currentBehavior = AppManager.default.behaviorForApp(id: application.id)
+            let behavior = currentBehavior == .inferred ? AppBehavior.media : currentBehavior
+            AppManager.default.propagate(
+                behavior: behavior,
+                forApp: application.id,
+                at: application.url,
+                from: .rule
+            )
+        }
+        rulesSet = AppManager.default.rules
     }
     
     private func removeRule() {

@@ -42,10 +42,16 @@ extension StoryboardInstantiable {
     static var bundle: Bundle? { nil }
     
     static func instantiate() -> Self {
+        let storyboard = NSStoryboard(name: storyboardName, bundle: bundle)
+        let controller: Any?
         if let id = sceneIdentifier {
-            return NSStoryboard(name: storyboardName, bundle: bundle).instantiateController(withIdentifier: id) as! Self
+            controller = storyboard.instantiateController(withIdentifier: id)
         } else {
-            return NSStoryboard(name: storyboardName, bundle: bundle).instantiateInitialController() as! Self
+            controller = storyboard.instantiateInitialController()
         }
+        guard let result = controller as? Self else {
+            preconditionFailure("Storyboard \(storyboardName) does not contain the expected \(Self.self) controller")
+        }
+        return result
     }
 }

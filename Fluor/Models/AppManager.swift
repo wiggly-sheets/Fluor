@@ -42,9 +42,6 @@ class AppManager: BehaviorDidChangePoster {
     @StoredDefault(SettingsKey.hideSwitchMethod, default: false)
     var hideSwitchMethod: Bool
     
-    @StoredDefault(SettingsKey.lastRunVersion, default: "unknown")
-    var lastRunVersion: String
-    
     @StoredDefault(SettingsKey.restoreStateOnQuit, default: false)
     var shouldRestoreStateOnQuit: Bool
     
@@ -63,17 +60,11 @@ class AppManager: BehaviorDidChangePoster {
     @StoredDefault(SettingsKey.showAllRunningProcesses, default: false)
     var showAllRunningProcesses: Bool
     
-    @StoredDefault(SettingsKey.userHasAlreadyAnsweredAccessibility, default: false)
-    var hasAlreadyAnsweredAccessibility: Bool 
-    
     @StoredDefault(SettingsKey.fnKeyMaximumDelay, default: 280)
     var fnKeyMaximumDelay: TimeInterval
     
     @StoredDefault(SettingsKey.hideNotificationAuthorizationPopup, default: false)
     var hideNotificationAuthorizationPopup: Bool
-    
-    @StoredDefault(SettingsKey.sendFnKeyNotification, default: true)
-    var sendFnKeyNotification: Bool
     
     @StoredRawDefault(SettingsKey.userNotificationEnablement, default: .none)
     var userNotificationEnablement: UserNotificationEnablement
@@ -93,96 +84,50 @@ class AppManager: BehaviorDidChangePoster {
     @StoredDefault(SettingsKey.toggleShortcutEnabled, default: true)
     var toggleShortcutEnabled: Bool
     
-    private(set) var rules: Set<Rule> = []
-    private var behaviorDict: [String: AppBehavior] = [:]
+    var rules: Set<Rule> {
+        Set(ruleRegistry.records.map { Rule(record: $0) })
+    }
+
+    private var ruleRegistry = RuleRegistry()
     private let defaults = UserDefaults.standard
     
     private init() {
-        self.migrateTahoePreferencesIfNeeded()
+        self.migrateLegacyPreferencesIfNeeded()
         self.loadRules()
     }
 
-    private func migrateTahoePreferencesIfNeeded() {
-        guard !defaults.bool(forKey: SettingsKey.migratedTahoePreferences) else { return }
-        defer { defaults.set(true, forKey: SettingsKey.migratedTahoePreferences) }
-
-        guard let legacyDefaults = UserDefaults(suiteName: "com.pyrolyse.FluorTahoe")?.persistentDomain(forName: "com.pyrolyse.FluorTahoe") else { return }
+    private func migrateLegacyPreferencesIfNeeded() {
+        guard !defaults.bool(forKey: SettingsKey.migratedLegacyPreferencesV2) else { return }
         let currentDomainName = Bundle.main.bundleIdentifier ?? ""
         let currentDefaults = defaults.persistentDomain(forName: currentDomainName) ?? [:]
 
-        let excludedKeys: Set<String> = [
-            "HasAlreadyRefusedAccessibility"
-        ]
+        let legacyDomains = PreferenceMigration.legacyDomainNames.compactMap(defaults.persistentDomain(forName:))
+        let migratedValues = PreferenceMigration.valuesToMigrate(
+            currentDomain: currentDefaults,
+            legacyDomains: legacyDomains
+        )
 
-        for (key, value) in legacyDefaults
-        where !key.hasPrefix("NSStatusItem ")
-            && !excludedKeys.contains(key)
-            && currentDefaults[key] == nil {
+        for (key, value) in migratedValues {
             defaults.set(value, forKey: key)
         }
-        defaults.set(true, forKey: SettingsKey.migratedTahoePreferences)
+        defaults.set(true, forKey: SettingsKey.migratedLegacyPreferencesV2)
     }
     
     func propagate(behavior: AppBehavior, forApp id: String, at url: URL, from source: NotificationSource) {
-        guard self.behaviorDict[id] != behavior else { return }
-        self.setBehaviorForApp(id: id, behavior: behavior, url: url)
+        guard ruleRegistry.setBehavior(behavior, for: id, at: url) else { return }
+        synchronizeRules()
         self.postBehaviorDidChangeNotification(id: id, url: url, behavior: behavior, source: source)
     }
     
     func behaviorForApp(id: String) -> AppBehavior {
-        return behaviorDict[id] ?? .inferred
+        ruleRegistry.behavior(for: id)
     }
-    
-    
-    func setBehaviorForApp(id: String, behavior: AppBehavior, url: URL) {
-        var change = false
-        if behavior == .inferred {
-            self.behaviorDict.removeValue(forKey: id)
-            guard let index = self.rules.firstIndex(where: { $0.url == url }) else { fatalError() }
-            self.rules.remove(at: index)
-            change = true
-        } else if let previousBehavior = self.behaviorDict[id] {
-            if previousBehavior != behavior {
-                self.behaviorDict[id] = behavior
-                guard let rule = self.rules.first(where: { $0.url == url }) else { fatalError() }
-                rule.behavior = behavior
-                change = true
-            }
-        } else {
-            behaviorDict[id] = behavior
-            self.rules.insert(.init(id: id, url: url, behavior: behavior))
-            change = true
-        }
-        if change { synchronizeRules() }
-    }
-    
-    
-    func getCurrentFKeyMode() -> FKeyMode {
-        FKeyManager.getCurrentFKeyMode().getOrFailWith { (error) -> Never in
-            AppErrorManager.terminateApp(withReason: error.localizedDescription)
-        }
-    }
-    
-    
-    func keyboardStateFor(behavior: AppBehavior) -> FKeyMode {
-        switch behavior {
-        case .inferred:
-            return self.defaultFKeyMode
-        case .media:
-            return .media
-        case .function:
-            return .function
-        }
-    }
-    
     private func loadRules() {
         let storedRules = defaults.array(forKey: SettingsKey.appRules) as? [[String: Any]] ?? []
-        let rules = Set(storedRules.compactMap(Rule.init(storedValue:)))
-        self.rules = rules
-        self.behaviorDict = .init(uniqueKeysWithValues: rules.map { ($0.id, $0.behavior) })
+        ruleRegistry = RuleRegistry(storedValues: storedRules)
     }
     
     private func synchronizeRules() {
-        defaults.set(rules.map(\.storedValue), forKey: SettingsKey.appRules)
+        defaults.set(ruleRegistry.storedValues, forKey: SettingsKey.appRules)
     }
 }

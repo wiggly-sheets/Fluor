@@ -53,8 +53,10 @@ class MultilinesCheckBoxLabel: NSTextField {
     }
     
     override func mouseUp(with event: NSEvent) {
-        if isHighlighted { checkBox.performClick(self) }
+        let shouldPerformClick = isHighlighted
         isClicked = false
+        isHighlighted = false
+        if shouldPerformClick { checkBox.performClick(self) }
     }
     
     override func mouseEntered(with event: NSEvent) {
