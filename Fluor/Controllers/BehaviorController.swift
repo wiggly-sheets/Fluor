@@ -408,7 +408,7 @@ class BehaviorController: NSObject, BehaviorDidChangeObserver, DefaultModeViewCo
                 if NSApp.keyWindow?.firstResponder is HotkeyRecorderButton {
                     return event
                 }
-                self?.manageKeyPress(event: event) == true ? nil : event
+                return self?.manageKeyPress(event: event) == true ? nil : event
             }
         }
     }
