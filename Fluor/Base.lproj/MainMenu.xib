@@ -9,6 +9,7 @@
         <customObject id="-2" userLabel="File's Owner" customClass="StatusMenuController" customModule="Fluor" customModuleProvider="target">
             <connections>
                 <outlet property="behaviorController" destination="PAA-w4-EHb" id="ZgG-gz-HwL"/>
+                <outlet property="launchAtLoginController" destination="08K-lI-3Rh" id="LAL-FL-9Xq"/>
                 <outlet property="menuItemsController" destination="fv7-LX-Zyw" id="ACy-fN-KHw"/>
                 <outlet property="statusMenu" destination="guO-bQ-N19" id="TYk-NZ-vdm"/>
             </connections>
@@ -169,19 +170,19 @@
                         <action selector="showPreferences:" target="-2" id="3w8-7W-jxA"/>
                     </connections>
                 </menuItem>
-                <menuItem title="Start Fluor at login" onStateImage="CheckEnabled" offStateImage="CheckDisabled" mixedStateImage="CheckMixed" id="eWy-d7-62P" customClass="CheckableMenuItem" customModule="Fluor" customModuleProvider="target">
+                <menuItem title="Start Fluor at login" tag="7" id="eWy-d7-62P">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <binding destination="08K-lI-3Rh" name="value" keyPath="self.launchAtLogin" id="heU-8m-SR5"/>
                     </connections>
                 </menuItem>
-                <menuItem title="Hide menu bar item" onStateImage="CheckEnabled" offStateImage="CheckDisabled" mixedStateImage="CheckMixed" id="HID-MB-ITEM" customClass="CheckableMenuItem" customModule="Fluor" customModuleProvider="target">
+                <menuItem title="Hide menu bar item" tag="8" id="HID-MB-ITEM">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <binding destination="TM7-Ze-uQz" name="value" keyPath="values.HideMenuBarItem" id="HID-MB-BIND"/>
                     </connections>
                 </menuItem>
-                <menuItem title="Disabled" onStateImage="CheckEnabled" offStateImage="CheckDisabled" mixedStateImage="CheckMixed" id="DqN-qz-yQz" customClass="CheckableMenuItem" customModule="Fluor" customModuleProvider="target">
+                <menuItem title="Disabled" tag="9" id="DqN-qz-yQz">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <action selector="toggleApplicationState:" target="-2" id="m0A-bt-3Ee"/>

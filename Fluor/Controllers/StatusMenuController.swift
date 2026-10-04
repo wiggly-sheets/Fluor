@@ -33,6 +33,7 @@ class StatusMenuController: NSObject, NSMenuDelegate, NSWindowDelegate, MenuCont
     @IBOutlet weak var statusMenu: NSMenu!
     @IBOutlet var menuItemsController: MenuItemsController!
     @IBOutlet var behaviorController: BehaviorController!
+    @IBOutlet weak var launchAtLoginController: LaunchAtLoginController!
 
     private var rulesController: RulesEditorWindowController?
     private var aboutController: AboutWindowController?
@@ -154,6 +155,12 @@ class StatusMenuController: NSObject, NSMenuDelegate, NSWindowDelegate, MenuCont
     
     func menuWillOpen(_ menu: NSMenu) {
         self.behaviorController.adaptToAccessibilityTrust()
+        let states: [(item: NSMenuItem, isOn: Bool)] = [
+            (item: self.statusMenu.item(withTag: 7), isOn: self.launchAtLoginController.launchAtLogin),
+            (item: self.statusMenu.item(withTag: 8), isOn: AppManager.default.hideMenuBarItem),
+            (item: self.statusMenu.item(withTag: 9), isOn: AppManager.default.isDisabled)
+        ].compactMap { state in state.item.map { (item: $0, isOn: state.isOn) } }
+        states.forEach { $0.item.state = $0.isOn ? .on : .off }
     }
     
     

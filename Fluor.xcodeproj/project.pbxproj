@@ -27,7 +27,6 @@
 		F10A000A0000000000000001 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = F10A00090000000000000001 /* AppIcon.icon */; };
 		3F4ABD0E201937B30075B178 /* RulesEditor.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3F4ABD0C201937B30075B178 /* RulesEditor.storyboard */; };
 		3F4ABD1020193B8D0075B178 /* RulesEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4ABD0F20193B8D0075B178 /* RulesEditorViewController.swift */; };
-		3F4E36C32111EF7A00CDCAA0 /* CheckableMenuItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4E36C22111EF7A00CDCAA0 /* CheckableMenuItem.swift */; };
 		3F5F57582016249E002AF4C1 /* RunningAppWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F5F57572016249E002AF4C1 /* RunningAppWindowController.swift */; };
 		3F697A0C1F88D47C007BA558 /* MoverEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F697A0B1F88D47C007BA558 /* MoverEffectView.swift */; };
 		3F6D52CA2069659800517E57 /* About.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3F6D52C82069659800517E57 /* About.storyboard */; };
@@ -112,7 +111,6 @@
 		3F3CFB4322131B5E00002089 /* Fluor.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Fluor.entitlements; sourceTree = "<group>"; };
 		3F4ABD0D201937B30075B178 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/RulesEditor.storyboard; sourceTree = "<group>"; };
 		3F4ABD0F20193B8D0075B178 /* RulesEditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RulesEditorViewController.swift; sourceTree = "<group>"; };
-		3F4E36C22111EF7A00CDCAA0 /* CheckableMenuItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckableMenuItem.swift; sourceTree = "<group>"; };
 		3F5F57572016249E002AF4C1 /* RunningAppWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunningAppWindowController.swift; sourceTree = "<group>"; };
 		3F697A0B1F88D47C007BA558 /* MoverEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoverEffectView.swift; sourceTree = "<group>"; };
 		3F6D52C92069659800517E57 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/About.storyboard; sourceTree = "<group>"; };
@@ -245,7 +243,6 @@
 		3F4C5CAF201943F4006CC84A /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				3F4E36C22111EF7A00CDCAA0 /* CheckableMenuItem.swift */,
 				3F8F93BA1EEAC9B900FCE91F /* RuleCellView.swift */,
 				3F697A0B1F88D47C007BA558 /* MoverEffectView.swift */,
 				3F6D52CD20696E2100517E57 /* PoppingLinkButton.swift */,
@@ -489,7 +486,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3F4E36C32111EF7A00CDCAA0 /* CheckableMenuItem.swift in Sources */,
 				F10B00010000000000000001 /* KeyboardModePolicy.swift in Sources */,
 				F10B00030000000000000001 /* KeyboardShortcut.swift in Sources */,
 				F10B00050000000000000001 /* PreferenceMigration.swift in Sources */,
