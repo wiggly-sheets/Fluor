@@ -1,5 +1,8 @@
 import Foundation
 import XCTest
+#if SWIFT_PACKAGE
+@testable import Fluor
+#endif
 
 final class AppSettingsTests: XCTestCase {
     private var suiteName: String!

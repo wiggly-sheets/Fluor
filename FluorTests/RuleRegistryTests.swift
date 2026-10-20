@@ -1,5 +1,8 @@
 import Foundation
 import XCTest
+#if SWIFT_PACKAGE
+@testable import Fluor
+#endif
 
 final class RuleRegistryTests: XCTestCase {
     func testMalformedAndInferredStoredRulesAreDiscarded() {

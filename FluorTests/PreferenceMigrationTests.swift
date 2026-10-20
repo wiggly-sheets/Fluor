@@ -1,4 +1,7 @@
 import XCTest
+#if SWIFT_PACKAGE
+@testable import Fluor
+#endif
 
 final class PreferenceMigrationTests: XCTestCase {
     func testCurrentValuesWinAndLegacyDomainsUsePriorityOrder() {
