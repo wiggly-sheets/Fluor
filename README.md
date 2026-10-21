@@ -102,6 +102,20 @@ Copy the resulting `Fluor.app` to `/Applications`. Locally built copies are ad-h
 
 The project builds for Apple Silicon and Intel. In Xcode, select the **Fluor** scheme and press <kbd>⌘R</kbd> to run a Debug build, or use the Release command above. The Sparkle updater has been removed, so updating a locally built copy means rebuilding and replacing the app in `/Applications`.
 
+### Building from the command line
+
+The repository carries a Makefile, so the same commands work in every product repository. Run `make help` for the full list.
+
+```bash
+make build             # debug build of the package
+make test              # run the tests
+make app               # build dist/Fluor.app
+make dmg               # build release/Fluor.dmg
+make release-artifacts # build the disk image and its checksums file
+```
+
+The app and the disk image are built with Xcode, because Xcode compiles the storyboards, the xib files, the asset catalog and the app icon, and the app looks its resources up in the main bundle. `make release VERSION=2.8.0` builds the release artifacts with that version and tags the commit locally, then prints the command that pushes the tag.
+
 ## Open source
 
 Fluor began as a small utility to make the keyboard behave the way its author needed: simple, thoughtfully designed, free, and useful to anyone with the same need. It remains open source so its behavior can be inspected, improved, and shared.
