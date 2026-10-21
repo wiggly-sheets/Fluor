@@ -116,6 +116,8 @@ make release-artifacts # build the disk image and its checksums file
 
 The app and the disk image are built with Xcode, because Xcode compiles the storyboards, the xib files, the asset catalog and the app icon, and the app looks its resources up in the main bundle. `make release VERSION=2.8.0` builds the release artifacts with that version and tags the commit locally, then prints the command that pushes the tag.
 
+The release workflow runs the test suite first, so a failing test blocks a release.
+
 ## Open source
 
 Fluor began as a small utility to make the keyboard behave the way its author needed: simple, thoughtfully designed, free, and useful to anyone with the same need. It remains open source so its behavior can be inspected, improved, and shared.

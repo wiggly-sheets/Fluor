@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.8.0 — 2026-10-20
+
+- Run the test suite in the release workflow before it builds the artifacts, so a failing test blocks the release.
+
 ## 2.7.0 — 2026-08-15
 
 - Adopt the `com.zm.fluor` bundle identity and safely migrate current settings without carrying stale menu-bar placement or Accessibility refusal state.

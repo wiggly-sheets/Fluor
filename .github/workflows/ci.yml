@@ -28,14 +28,7 @@ jobs:
         run: make build
 
       - name: Run the test suite
-        run: |
-          set -euo pipefail
-          make test 2>&1 | tee "$RUNNER_TEMP/test-output.log"
-          if ! grep -q 'Executed 21 tests, with 0 failures' "$RUNNER_TEMP/test-output.log"; then
-            echo '::error::the test suite did not report 21 passing tests'
-            exit 1
-          fi
-          echo 'The test suite passed 21 tests.'
+        run: scripts/test-suite.sh
 
       - name: Build the shipping bundle and check the version
         run: |

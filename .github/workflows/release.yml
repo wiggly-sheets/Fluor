@@ -61,6 +61,9 @@ jobs:
           echo "The release builds version $version."
           echo "version=$version" >> "$GITHUB_OUTPUT"
 
+      - name: Run the test suite
+        run: scripts/test-suite.sh
+
       - name: Decide whether the release is a draft
         id: draft
         env:
