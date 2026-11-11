@@ -130,7 +130,7 @@
                                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                 </textFieldCell>
                                             </textField>
-                                            <segmentedControl horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="BPe-ZE-s6t">
+                                            <segmentedControl horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="BPe-ZE-s6t" customClass="GlassSegmentedControl" customModule="Fluor" customModuleProvider="target">
                                                 <rect key="frame" x="150" y="-2" width="71" height="24"/>
                                                 <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="selectOne" id="aHs-kY-jFz">
                                                     <font key="font" metaFont="system"/>
@@ -166,7 +166,7 @@
                                                     <binding destination="XlE-y8-iHG" name="value" keyPath="values.ResetModeOnQuit" id="VAu-q5-hnj"/>
                                                 </connections>
                                             </button>
-                                            <segmentedControl horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="x7F-UY-WoD">
+                                            <segmentedControl horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="x7F-UY-WoD" customClass="GlassSegmentedControl" customModule="Fluor" customModuleProvider="target">
                                                 <rect key="frame" x="150" y="-2" width="71" height="24"/>
                                                 <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="selectOne" id="J3t-x7-5C6">
                                                     <font key="font" metaFont="system"/>

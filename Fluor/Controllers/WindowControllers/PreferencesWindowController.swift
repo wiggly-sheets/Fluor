@@ -31,12 +31,48 @@ import Cocoa
 
 final class PreferencesWindowController: NSWindowController, StoryboardInstantiable {
     static var storyboardName: NSStoryboard.Name = .preferences
-    
+
     override func windowDidLoad() {
         super.windowDidLoad()
-        
-        let toolbar = window?.toolbar
+
+        guard let window = window else { return }
+
+        window.styleMask.insert(.fullSizeContentView)
+        window.titlebarAppearsTransparent = true
+        window.titleVisibility = .hidden
+        window.isMovableByWindowBackground = true
+        window.backgroundColor = .clear
+
+        if let contentView = window.contentView {
+            contentView.wantsLayer = true
+            contentView.layer?.backgroundColor = NSColor.clear.cgColor
+        }
+
+        setupGlassToolbar()
+
+        let toolbar = window.toolbar
         let insertionIndex = max(0, (toolbar?.items.count ?? 0) - 1)
         toolbar?.insertItem(withItemIdentifier: .flexibleSpace, at: insertionIndex)
+    }
+
+    private func setupGlassToolbar() {
+        guard let window = window, let toolbar = window.toolbar else { return }
+
+        toolbar.allowsUserCustomization = false
+
+        if let superview = toolbar.items.first?.view?.superview?.superview {
+            superview.wantsLayer = true
+            superview.layer?.backgroundColor = NSColor.clear.cgColor
+        }
+
+        for item in toolbar.items {
+            item.view?.wantsLayer = true
+            item.view?.layer?.backgroundColor = NSColor.clear.cgColor
+            if let button = item.view as? NSButton {
+                button.bezelStyle = .rounded
+                button.isBordered = false
+                button.contentTintColor = .labelColor
+            }
+        }
     }
 }

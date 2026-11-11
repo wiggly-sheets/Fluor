@@ -30,6 +30,86 @@
 import Cocoa
 
 class PreferencesTabViewController: NSTabViewController, TriggerSectionVisibilityDidChangePoster, SwitchMethodDidChangePoster {
+    private var glassEffectView: NSVisualEffectView?
+    private var tabGlassPanels: [NSView: NSVisualEffectView] = [:]
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupGlassBackground()
+        setupTabGlassPanels()
+        tabView.delegate = self
+    }
+
+    override func viewDidLayout() {
+        super.viewDidLayout()
+        glassEffectView?.frame = view.bounds
+    }
+
+    private func setupGlassBackground() {
+        let effectView = NSVisualEffectView()
+        effectView.material = .sidebar
+        effectView.blendingMode = .withinWindow
+        effectView.state = .active
+        effectView.wantsLayer = true
+        effectView.layer?.cornerRadius = 16
+        effectView.layer?.masksToBounds = true
+        effectView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(effectView, positioned: .below, relativeTo: nil)
+
+        NSLayoutConstraint.activate([
+            effectView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            effectView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            effectView.topAnchor.constraint(equalTo: view.topAnchor),
+            effectView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+
+        glassEffectView = effectView
+
+        tabView.drawsBackground = false
+        tabView.wantsLayer = true
+        tabView.layer?.backgroundColor = NSColor.clear.cgColor
+
+        for tabViewItem in tabViewItems {
+            tabViewItem.view?.wantsLayer = true
+            tabViewItem.view?.layer?.backgroundColor = NSColor.clear.cgColor
+        }
+    }
+
+    private func setupTabGlassPanels() {
+        for tabViewItem in tabViewItems {
+            guard let tabView = tabViewItem.view else { continue }
+            addGlassPanel(to: tabView)
+        }
+    }
+
+    private func addGlassPanel(to tabView: NSView) {
+        let panelView = NSVisualEffectView()
+        panelView.material = .popover
+        panelView.blendingMode = .withinWindow
+        panelView.state = .active
+        panelView.wantsLayer = true
+        panelView.layer?.cornerRadius = 12
+        panelView.layer?.masksToBounds = true
+        panelView.translatesAutoresizingMaskIntoConstraints = false
+        tabView.addSubview(panelView, positioned: .below, relativeTo: nil)
+
+        NSLayoutConstraint.activate([
+            panelView.leadingAnchor.constraint(equalTo: tabView.leadingAnchor, constant: 16),
+            panelView.trailingAnchor.constraint(equalTo: tabView.trailingAnchor, constant: -16),
+            panelView.topAnchor.constraint(equalTo: tabView.topAnchor, constant: 16),
+            panelView.bottomAnchor.constraint(equalTo: tabView.bottomAnchor, constant: -16)
+        ])
+
+        tabGlassPanels[tabView] = panelView
+
+        for subview in tabView.subviews {
+            if subview is NSTextField || subview is NSButton || subview is NSSegmentedControl || subview is NSStackView {
+                subview.wantsLayer = true
+                subview.layer?.backgroundColor = NSColor.clear.cgColor
+            }
+        }
+    }
+
     @IBAction func requestAccessibilityPermission(_ sender: Any) {
         guard !AXIsProcessTrusted() else { return }
         let options: NSDictionary = [kAXTrustedCheckOptionPrompt.takeRetainedValue(): true]
@@ -40,8 +120,18 @@ class PreferencesTabViewController: NSTabViewController, TriggerSectionVisibilit
         let visible = sender.state == .off
         if !visible {
             self.postSwitchMethodDidChangeNotification(method: .window)
-            AppManager.default.switchMethod = .window            
+            AppManager.default.switchMethod = .window
         }
         self.postTriggerSectionVisibilityDidChange(visible: visible)
+    }
+}
+
+extension PreferencesTabViewController {
+    override func tabView(_ tabView: NSTabView, didSelect tabViewItem: NSTabViewItem?) {
+        super.tabView(tabView, didSelect: tabViewItem)
+        guard let tabView = tabViewItem?.view else { return }
+        if tabGlassPanels[tabView] == nil {
+            addGlassPanel(to: tabView)
+        }
     }
 }

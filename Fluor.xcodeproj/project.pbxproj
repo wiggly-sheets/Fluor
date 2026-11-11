@@ -14,6 +14,7 @@
 		3F244071245D73180061960A /* UserNotificationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F244070245D73180061960A /* UserNotificationHelper.swift */; };
 		3F2571F41FDBD43500020194 /* TableViewContentAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F2571F31FDBD43500020194 /* TableViewContentAnimator.swift */; };
 		3F266BA1246489D70005395F /* MultilinesCheckBoxLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F266BA0246489D70005395F /* MultilinesCheckBoxLabel.swift */; };
+		F10D00010000000000000001 /* GlassSegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10D00020000000000000001 /* GlassSegmentedControl.swift */; };
 		F10A00030000000000000001 /* MediaModeIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10A00040000000000000001 /* MediaModeIcon.swift */; };
 		F10A00010000000000000001 /* HotkeyRecorderButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10A00020000000000000001 /* HotkeyRecorderButton.swift */; };
 		F10A00050000000000000001 /* LaunchAtLoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10A00060000000000000001 /* LaunchAtLoginController.swift */; };
@@ -149,6 +150,7 @@
 		3FE7E0E11D7CBE1700DC754D /* AboutWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutWindowController.swift; sourceTree = "<group>"; };
 		3FE7E0E81D7CC01B00DC754D /* RulesEditorWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RulesEditorWindowController.swift; sourceTree = "<group>"; };
 		3FF2410A1EDB4E0000E524CD /* SwitchMethodViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchMethodViewController.swift; sourceTree = "<group>"; };
+		F10D00020000000000000001 /* GlassSegmentedControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassSegmentedControl.swift; sourceTree = "<group>"; };
 		F10B00020000000000000001 /* KeyboardModePolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardModePolicy.swift; sourceTree = "<group>"; };
 		F10B00040000000000000001 /* KeyboardShortcut.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardShortcut.swift; sourceTree = "<group>"; };
 		F10B00060000000000000001 /* PreferenceMigration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceMigration.swift; sourceTree = "<group>"; };
@@ -252,6 +254,7 @@
 				3F266BA0246489D70005395F /* MultilinesCheckBoxLabel.swift */,
 				F10A00020000000000000001 /* HotkeyRecorderButton.swift */,
 				F10A00040000000000000001 /* MediaModeIcon.swift */,
+				F10D00020000000000000001 /* GlassSegmentedControl.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -506,6 +509,7 @@
 				3F2FA3FF1D79D094003E2AD8 /* StatusMenuController.swift in Sources */,
 				3FE784DD2052F591007F6200 /* NSViewExtension.swift in Sources */,
 				3F266BA1246489D70005395F /* MultilinesCheckBoxLabel.swift in Sources */,
+				F10D00010000000000000001 /* GlassSegmentedControl.swift in Sources */,
 				F10A00010000000000000001 /* HotkeyRecorderButton.swift in Sources */,
 				F10A00030000000000000001 /* MediaModeIcon.swift in Sources */,
 				3F84FE81200E655E00871275 /* StoryboardInstantiableProtocol.swift in Sources */,

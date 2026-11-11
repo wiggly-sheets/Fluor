@@ -57,6 +57,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         
         UserNotificationHelper.askUserAtLaunch()
         
+
+        if ProcessInfo.processInfo.environment["FLUOR_DEBUG_OPEN_SETTINGS"] == "1" {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+                self?.statusMenuController.showPreferencesWindow()
+            }
+        }
         self.loadMainMenu()
     }
 
