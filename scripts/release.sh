@@ -1,141 +1,76 @@
 #!/usr/bin/env bash
+# Prepare a release: bump the changelog, test, build, verify, commit and tag.
+# The target never pushes. The person who runs it decides when to push.
 #
-# Fluor — prepare a release.
-#
-# The script builds the release artifacts of a version, checks that the
-# version really reached the bundle, takes the release notes from
-# CHANGELOG.md and prints the plan of the release. It never pushes, never
-# tags and never publishes: the release workflow does that.
-#
-# Usage: scripts/release.sh 2.8.0
-
+# Usage: APP_NAME="Fluor" scripts/release.sh X.Y.Z
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-readonly ROOT
 cd "$ROOT"
 
-readonly APP_NAME="Fluor"
-readonly BUNDLE="dist/${APP_NAME}.app"
-readonly DMG="release/${APP_NAME}.dmg"
-readonly CHECKSUMS="release/checksums.txt"
-readonly NOTES="release-notes.md"
-readonly VERSION_PATTERN='^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$'
+VERSION="${1:-}"
+APP_NAME="${APP_NAME:-Fluor}"
+CHANGELOG="CHANGELOG.md"
+VERSION_RE='^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$'
 
-fail() {
-	printf 'error: %s\n' "$*" >&2
+die() {
+	echo "error: $*" >&2
 	exit 1
 }
 
-# The version comes from the command line.
-version="${1:-}"
-if [[ -z "$version" ]]; then
-	printf 'usage: scripts/release.sh <version>\n' >&2
-	printf 'example: scripts/release.sh 2.8.0\n' >&2
-	exit 1
-fi
-if [[ ! "$version" =~ $VERSION_PATTERN ]]; then
-	fail "the version \"$version\" is not valid. Use MAJOR.MINOR.PATCH, for example 2.8.0, or add a suffix, for example 2.8.0-beta.1."
-fi
-
-# The working tree must be clean. The notes file belongs to the script, so it
-# never blocks a second run.
-dirty="$(git status --porcelain -- . ":(exclude)$NOTES")"
-if [[ -n "$dirty" ]]; then
-	printf 'error: the working tree is dirty. Commit or stash your changes first.\n' >&2
-	printf '%s\n' "$dirty" >&2
-	exit 1
-fi
-
-# The release notes come from the section of CHANGELOG.md for the version. The
-# headings look like "## 2.7.0 — 2026-08-15", so the section starts at the
-# heading and ends at the next heading. The changelog is read before the build,
-# so a missing section stops the release without a build.
-notes=""
-notes_found="no"
-read_notes() {
-	local line heading
-	while IFS= read -r line || [[ -n "$line" ]]; do
-		if [[ "$notes_found" == "yes" ]]; then
-			if [[ "$line" == "## "* ]]; then
-				break
-			fi
-			notes+="${line}"$'\n'
-			continue
-		fi
-		if [[ "$line" == "## "* ]]; then
-			heading="${line#\#\# }"
-			if [[ "$heading" == "$version" || "$heading" == "$version "* ]]; then
-				notes_found="yes"
-				notes+="${line}"$'\n'
-			fi
-		fi
-	done <CHANGELOG.md
+[[ -n "$VERSION" ]] || die "usage: scripts/release.sh X.Y.Z"
+[[ "$VERSION" =~ $VERSION_RE ]] || die "the version \"$VERSION\" is not X.Y.Z with an optional prerelease suffix"
+[[ -z "$(git status --porcelain)" ]] || {
+	git status --short
+	die "the working tree is dirty. Commit or stash your changes first."
 }
-read_notes
+if git rev-parse -q --verify "refs/tags/v$VERSION" >/dev/null; then
+	die "the tag v$VERSION already exists."
+fi
 
-if [[ "$notes_found" == "no" ]]; then
-	if [[ "$version" == *-* ]]; then
-		notes="Fluor ${version}"$'\n'
-		printf 'warning: CHANGELOG.md has no section for %s. The notes fall back to one line.\n' "$version" >&2
-	else
-		fail "CHANGELOG.md has no section for ${version}. Add a \"## ${version}\" section to CHANGELOG.md before the release."
+# The tag must land on the default branch. The branch is read from the remote
+# HEAD, with main and master as the fallback.
+branch="$(git symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null || true)"
+branch="${branch#origin/}"
+if [[ -z "$branch" ]]; then
+	for candidate in main master; do
+		if git rev-parse -q --verify "refs/remotes/origin/$candidate" >/dev/null; then
+			branch="$candidate"
+			break
+		fi
+	done
+fi
+[[ -n "$branch" ]] || die "the default branch is unknown; run git fetch origin first"
+git rev-parse -q --verify "refs/remotes/origin/$branch" >/dev/null ||
+	die "origin/$branch is not in this checkout; run git fetch origin first"
+current="$(git symbolic-ref --quiet --short HEAD || true)"
+[[ "$current" == "$branch" ]] ||
+	die "the release must be cut from $branch, not ${current:-a detached HEAD}."
+
+# The bump is the only change the release makes to the repository. A failure
+# before the commit restores it, so a stopped release leaves no half-bump.
+./scripts/changelog.sh bump "$VERSION"
+bumped=("$CHANGELOG")
+committed=0
+restore() {
+	local status=$?
+	if [[ "$status" -ne 0 && "$committed" -eq 0 ]]; then
+		git checkout -- "${bumped[@]}" 2>/dev/null || true
+		echo "The changelog bump was restored." >&2
 	fi
-fi
+}
+trap restore EXIT
 
-# The release must sit on the default branch. The branch comes from the remote
-# HEAD, with main as the fallback.
-default_branch="$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null || true)"
-default_branch="${default_branch#origin/}"
-if [[ -z "$default_branch" ]]; then
-	default_branch="main"
-fi
-if ! git rev-parse --verify --quiet "refs/remotes/origin/${default_branch}" >/dev/null; then
-	fail "the default branch origin/${default_branch} is not in this checkout. Fetch the branches of the repository first."
-fi
+make test
+make release-artifacts VERSION="$VERSION"
+make verify VERSION="$VERSION"
 
-if git merge-base --is-ancestor HEAD "refs/remotes/origin/${default_branch}"; then
-	branch_state="on the default branch ${default_branch}"
-elif [[ "$version" == *-* ]] && git merge-base --is-ancestor "refs/remotes/origin/${default_branch}" HEAD; then
-	# A draft may be cut from a branch that the default branch does not hold yet.
-	branch_state="ahead of the default branch ${default_branch}, not merged yet"
-	printf 'warning: the tag would sit on a commit that is not on the default branch %s.\n' "$default_branch" >&2
-	printf 'warning: a published release must be tagged on the default branch.\n' >&2
-else
-	fail "the commit $(git rev-parse --short HEAD) is not on the default branch ${default_branch}. Tag the release on the default branch."
-fi
+git add "${bumped[@]}"
+git commit -m "chore(release): v$VERSION"
+committed=1
+git tag -a "v$VERSION" -m "$APP_NAME $VERSION"
 
-# The artifacts carry the version, so the tag is the only version source.
-printf 'Building the release artifacts of %s...\n' "$version"
-make release-artifacts VERSION="$version"
-
-plist="${BUNDLE}/Contents/Info.plist"
-if [[ ! -f "$plist" ]]; then
-	fail "the bundle ${BUNDLE} does not exist. The build did not produce it."
-fi
-bundle_version="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$plist")"
-if [[ "$bundle_version" != "$version" ]]; then
-	fail "the bundle reports the version ${bundle_version}, but ${version} was asked for."
-fi
-printf 'The bundle reports the version %s.\n' "$bundle_version"
-
-# The release notes were read above. The file holds the body of the release.
-while [[ "$notes" == *$'\n' ]]; do
-	notes="${notes%$'\n'}"
-done
-printf '%s\n' "$notes" >"$NOTES"
-
-draft="no"
-if [[ "$version" == *-* ]]; then
-	draft="yes"
-fi
-
-printf '\n'
-printf 'Release plan\n'
-printf '  version:          %s\n' "$version"
-printf '  default branch:   %s (%s)\n' "$default_branch" "$branch_state"
-printf '  published files:  %s, %s\n' "$DMG" "$CHECKSUMS"
-printf '  notes file:       %s (the body of the release, uploaded as well)\n' "$NOTES"
-printf '  draft:            %s\n' "$draft"
-printf '\n'
-printf 'The script does not push, tag or publish. The release workflow does that.\n'
+echo ""
+echo "Committed the release bump and tagged v$VERSION. Push it with:"
+echo "  git push origin $branch"
+echo "  git push origin v$VERSION"

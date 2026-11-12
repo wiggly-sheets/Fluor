@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+
+<!-- pre-versioning -->
+
 ## 2.8.0 — 2026-10-20
 
 - Run the test suite in the release workflow before it builds the artifacts, so a failing test blocks the release.

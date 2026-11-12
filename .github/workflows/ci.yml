@@ -28,20 +28,13 @@ jobs:
         run: make build
 
       - name: Run the test suite
-        run: scripts/test-suite.sh
+        run: make test
 
-      - name: Build the shipping bundle and check the version
-        run: |
-          set -euo pipefail
-          make app VERSION=0.0.0-ci
-          version=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' dist/Fluor.app/Contents/Info.plist)
-          echo "CFBundleShortVersionString: $version"
-          if [ "$version" != "0.0.0-ci" ]; then
-            echo "::error::the bundle should report 0.0.0-ci, but it reports $version"
-            exit 1
-          fi
-          codesign --verify --deep --strict dist/Fluor.app
-          echo 'codesign --verify --deep --strict dist/Fluor.app succeeded.'
+      - name: Build the shipping bundle
+        run: make app VERSION=0.0.0-ci
+
+      - name: Verify the bundle
+        run: make verify VERSION=0.0.0-ci
 
       - name: Build the Intel bundle and check the architecture
         run: |
@@ -54,28 +47,9 @@ jobs:
             exit 1
           fi
 
-      - name: Build the release artifacts and check the checksum
-        run: |
-          set -euo pipefail
-          make release-artifacts VERSION=0.0.0-ci
-          lines=$(wc -l < release/checksums.txt | tr -d ' ')
-          if [ "$lines" != "1" ]; then
-            echo "::error::release/checksums.txt should hold one line, but it holds $lines"
-            exit 1
-          fi
-          line=$(cat release/checksums.txt)
-          if ! printf '%s\n' "$line" | grep -Eq '^[0-9a-f]{64}  Fluor\.dmg$'; then
-            echo "::error::unexpected checksum line: $line"
-            exit 1
-          fi
-          recorded=$(printf '%s\n' "$line" | cut -d' ' -f1)
-          digest=$(shasum -a 256 release/Fluor.dmg | cut -d' ' -f1)
-          echo "release/checksums.txt: $line"
-          echo "shasum -a 256 release/Fluor.dmg: $digest  Fluor.dmg"
-          if [ "$recorded" != "$digest" ]; then
-            echo "::error::the checksum file records $recorded, but the disk image hashes to $digest"
-            exit 1
-          fi
+      # release-artifacts writes the checksum file and verifies it.
+      - name: Build the release artifacts
+        run: make release-artifacts VERSION=0.0.0-ci
 
       - name: Remove the build products
         run: make clean

@@ -108,13 +108,16 @@ The repository carries a Makefile, so the same commands work in every product re
 
 ```bash
 make build             # debug build of the package
-make test              # run the tests
+make test              # changelog check and the test suite
+make verify            # check architecture, version and signature
+make run               # install into ~/Applications and launch
 make app               # build dist/Fluor.app
 make dmg               # build release/Fluor.dmg
-make release-artifacts # build the disk image and its checksums file
+make release-artifacts # build the disk image and its verified checksums file
+make release-notes VERSION=2.8.0  # preview the changelog section
 ```
 
-The app and the disk image are built with Xcode, because Xcode compiles the storyboards, the xib files, the asset catalog and the app icon, and the app looks its resources up in the main bundle. `make release VERSION=2.8.0` builds the release artifacts with that version and tags the commit locally, then prints the command that pushes the tag.
+The app and the disk image are built with Xcode, because Xcode compiles the storyboards, the xib files, the asset catalog and the app icon, and the app looks its resources up in the main bundle. `make release VERSION=2.8.0` moves `[Unreleased]` to that version, runs the tests, builds and verifies the artifacts, commits the changelog bump and creates the tag locally, then prints the commands that push the commit and the tag.
 
 The release workflow runs the test suite first, so a failing test blocks a release.
 

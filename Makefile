@@ -9,6 +9,8 @@ BUILD_DIR   := build
 DIST_DIR    := dist
 RELEASE_DIR := release
 SPM_DIR     := .build
+INSTALL_DIR ?= $(HOME)/Applications
+INSTALL_APP := $(INSTALL_DIR)/$(APP_NAME).app
 
 XCODE_PROJECT := Fluor.xcodeproj
 XCODE_SCHEME  := Fluor
@@ -47,8 +49,8 @@ BUILD_NUMBER  :=
 VERSION_FLAGS :=
 endif
 
-.PHONY: help build test app app-arm app-intel app-universal \
-	dmg dmg-arm dmg-intel dmg-universal release-artifacts release clean
+.PHONY: help build test verify run install app app-arm app-intel app-universal \
+	dmg dmg-arm dmg-intel dmg-universal release-artifacts release-notes release clean
 
 .DEFAULT_GOAL := help
 
@@ -60,7 +62,10 @@ help:
 		'' \
 		'  help                 List every target (default).' \
 		'  build                Debug build of the SwiftPM package.' \
-		'  test                 Run the SwiftPM test suite.' \
+		'  test                 Run the changelog check and the SwiftPM test suite.' \
+		'  verify               Check the bundle: architecture, version and signature.' \
+		'  run                  Install the app bundle into ~/Applications and launch it.' \
+		'  install              Copy the app bundle into ~/Applications.' \
 		'  app                  Build the shipping bundle into dist/Fluor.app.' \
 		'  app-arm              Build an arm64 bundle into dist/Fluor-arm64.app.' \
 		'  app-intel            Build an x86_64 bundle into dist/Fluor-x86_64.app.' \
@@ -69,11 +74,13 @@ help:
 		'  dmg-arm              Build release/Fluor-arm64.dmg from the arm64 bundle.' \
 		'  dmg-intel            Build release/Fluor-x86_64.dmg from the x86_64 bundle.' \
 		'  dmg-universal        Build release/Fluor-universal.dmg from the universal bundle.' \
-		'  release-artifacts    Build the DMG and write release/checksums.txt for the Homebrew tap.' \
-		'  release VERSION=x.y.z  Build the artifacts, tag v<x.y.z> locally, print the push command.' \
+		'  release-artifacts    Build the DMG and release/checksums.txt, then verify the checksum.' \
+		'  release-notes VERSION=x.y.z  Print the changelog section of a version.' \
+		'  release VERSION=x.y.z  Bump the changelog, test, build, verify, commit and tag.' \
 		'  clean                Remove .build/, build/, dist/ and release/.' \
 		'' \
 		'Notes' \
+		'  CHANGELOG.md follows the shared shape and `make test` checks it.' \
 		'  The app bundle comes from Xcode, not from SwiftPM. Xcode compiles the' \
 		'  storyboards, the xib files, the asset catalog and the Icon Composer icon,' \
 		'  and the app looks its resources up in the main bundle. `swift build` alone' \
@@ -83,7 +90,9 @@ help:
 		'  Signing stays ad-hoc, as it is today: CODE_SIGN_STYLE = Manual and' \
 		'  CODE_SIGN_IDENTITY = "-". There is no Developer ID identity and no' \
 		'  notarization.' \
-		'  `make release VERSION=2.8.0` overrides MARKETING_VERSION without touching' \
+		'  `make release VERSION=2.8.0` moves [Unreleased] to the version, runs the' \
+		'  tests, builds and verifies the artifacts, commits the bump and creates the' \
+		'  annotated tag. It overrides MARKETING_VERSION without touching' \
 		'  Fluor.xcodeproj or Fluor/Info.plist. The build number is the version with' \
 		'  the dots removed, times 10: 2.7.0 gives 2700, 2.8.0 gives 2800.' \
 		'  create-dmg is required for the dmg targets: brew install create-dmg.'
@@ -96,7 +105,48 @@ build:
 ## test — test suite
 
 test:
+	cd "$(ROOT)" && ./scripts/changelog.sh check
 	cd "$(ROOT)" && swift test
+
+## verify — check the built bundle
+
+verify:
+	@test -d "$(DIST_APP)" || { \
+		echo "error: $(DIST_APP) is missing. Run make app first."; \
+		exit 1; \
+	}
+	@binary="$(DIST_APP)/Contents/MacOS/$(APP_NAME)"; \
+	archs="$$(lipo -archs "$$binary" | tr ' ' '\n' | sort | tr '\n' ' ' | xargs)"; \
+	echo "Architectures: $$archs"; \
+	test "$$archs" = "arm64 x86_64" || { \
+		echo "error: expected a universal binary, got [$$archs]."; \
+		exit 1; \
+	}
+	@if [ -n "$(strip $(VERSION))" ]; then \
+		version="$$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$(DIST_APP)/Contents/Info.plist")"; \
+		echo "Bundle version: $$version (expected $(VERSION))"; \
+		test "$$version" = "$(VERSION)" || { \
+			echo "error: the bundle reports $$version, but $(VERSION) was expected."; \
+			exit 1; \
+		}; \
+	else \
+		echo "Bundle version: $$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$(DIST_APP)/Contents/Info.plist") (no VERSION given)"; \
+	fi
+	codesign --verify --deep --strict "$(DIST_APP)"
+	@echo "Verified $(DIST_APP)."
+
+## install — copy the bundle into ~/Applications
+
+install: app
+	mkdir -p "$(INSTALL_DIR)"
+	rm -rf "$(INSTALL_APP)"
+	ditto "$(DIST_APP)" "$(INSTALL_APP)"
+	@echo "Installed $(INSTALL_APP)"
+
+## run — install the bundle and launch it
+
+run: install
+	open "$(INSTALL_APP)"
 
 ## app — the bundle the product ships
 
@@ -130,30 +180,27 @@ dmg-universal: app-universal
 
 release-artifacts: dmg
 	@cd "$(ROOT)/$(RELEASE_DIR)" && shasum -a 256 "$(APP_NAME).dmg" > checksums.txt
+	@cd "$(ROOT)/$(RELEASE_DIR)" && shasum -a 256 -c checksums.txt
 	@echo "$(RELEASE_DIR)/checksums.txt:"
 	@cat "$(ROOT)/$(RELEASE_DIR)/checksums.txt"
 
-## release — build the artifacts and tag them, without pushing
+## release-notes — print the changelog section of a version
+
+release-notes:
+	@if [ -z "$(strip $(VERSION))" ]; then \
+		echo "error: make release-notes needs a version, for example: make release-notes VERSION=2.8.0"; \
+		exit 1; \
+	fi
+	@./scripts/changelog.sh notes "$(VERSION)"
+
+## release — bump, test, build, verify, commit and tag, without pushing
 
 release:
 	@if [ -z "$(strip $(VERSION))" ]; then \
 		echo "error: make release needs a version, for example: make release VERSION=2.8.0"; \
 		exit 1; \
 	fi
-	@if [ -n "$$(git -C "$(ROOT)" status --porcelain)" ]; then \
-		echo "error: the working tree is dirty. Commit or stash your changes first."; \
-		git -C "$(ROOT)" status --short; \
-		exit 1; \
-	fi
-	@if git -C "$(ROOT)" rev-parse -q --verify "refs/tags/v$(VERSION)" >/dev/null; then \
-		echo "error: the tag v$(VERSION) already exists."; \
-		exit 1; \
-	fi
-	$(MAKE) -C "$(ROOT)" app dmg release-artifacts VERSION=$(VERSION)
-	git -C "$(ROOT)" tag -a "v$(VERSION)" -m "$(APP_NAME) $(VERSION)"
-	@echo ""
-	@echo "Tagged v$(VERSION). Push it with:"
-	@echo "  git push origin v$(VERSION)"
+	@APP_NAME="$(APP_NAME)" ./scripts/release.sh "$(VERSION)"
 
 ## clean — remove everything the build produces
 
