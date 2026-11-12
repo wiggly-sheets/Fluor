@@ -27,57 +27,29 @@
 
 import Cocoa
 
+/// A segmented control that uses the standard AppKit appearance, including the
+/// Liquid Glass material that macOS provides for current controls.
 final class GlassSegmentedControl: NSSegmentedControl {
-    private var glassEffectView: NSVisualEffectView?
-
     override func awakeFromNib() {
         super.awakeFromNib()
-        setupGlassAppearance()
+        configureAppearance()
     }
 
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
-        setupGlassAppearance()
+        configureAppearance()
     }
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        setupGlassAppearance()
+        configureAppearance()
     }
 
-    private func setupGlassAppearance() {
-        wantsLayer = true
-        layer?.backgroundColor = NSColor.clear.cgColor
+    private func configureAppearance() {
+        segmentStyle = .automatic
 
-        let effectView = NSVisualEffectView()
-        effectView.material = .popover
-        effectView.blendingMode = .withinWindow
-        effectView.state = .active
-        effectView.wantsLayer = true
-        effectView.layer?.cornerRadius = 6
-        effectView.layer?.masksToBounds = true
-        effectView.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(effectView, positioned: .below, relativeTo: nil)
-
-        NSLayoutConstraint.activate([
-            effectView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            effectView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            effectView.topAnchor.constraint(equalTo: topAnchor),
-            effectView.bottomAnchor.constraint(equalTo: bottomAnchor)
-        ])
-
-        glassEffectView = effectView
-
-        segmentStyle = .rounded
-    }
-
-    override func layout() {
-        super.layout()
-        glassEffectView?.frame = bounds
-    }
-
-    override func draw(_ dirtyRect: NSRect) {
-        super.draw(dirtyRect)
-        glassEffectView?.frame = bounds
+        if #available(macOS 27.0, *) {
+            role = .valueSelection
+        }
     }
 }

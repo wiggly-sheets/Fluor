@@ -3,62 +3,21 @@
 //  Fluor
 //
 
-//
-//  HotkeyRecorderButton.swift
-//  Fluor
-//
-
 import Cocoa
 
 final class HotkeyRecorderButton: NSButton {
     private var isRecording = false
-    private var glassEffectView: NSVisualEffectView?
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        setupGlassAppearance()
+        configureAppearance()
         updateTitle()
     }
 
-    private func setupGlassAppearance() {
-        bezelStyle = .regularSquare
-        isBordered = false
-        wantsLayer = true
-        layer?.backgroundColor = NSColor.clear.cgColor
-
-        let effectView = NSVisualEffectView()
-        effectView.material = .popover
-        effectView.blendingMode = .withinWindow
-        effectView.state = .active
-        effectView.wantsLayer = true
-        effectView.layer?.cornerRadius = 6
-        effectView.layer?.masksToBounds = true
-        effectView.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(effectView, positioned: .below, relativeTo: nil)
-
-        NSLayoutConstraint.activate([
-            effectView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            effectView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            effectView.topAnchor.constraint(equalTo: topAnchor),
-            effectView.bottomAnchor.constraint(equalTo: bottomAnchor)
-        ])
-
-        glassEffectView = effectView
+    private func configureAppearance() {
+        bezelStyle = .glass
+        isBordered = true
         contentTintColor = .labelColor
-    }
-
-    override func layout() {
-        super.layout()
-        glassEffectView?.frame = bounds
-    }
-
-    override func updateLayer() {
-        super.updateLayer()
-        if isHighlighted {
-            glassEffectView?.layer?.backgroundColor = NSColor.selectedControlColor.withAlphaComponent(0.3).cgColor
-        } else {
-            glassEffectView?.layer?.backgroundColor = NSColor.clear.cgColor
-        }
     }
 
     override func mouseDown(with event: NSEvent) {

@@ -195,7 +195,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                             </scrollView>
-                            <visualEffectView wantsLayer="YES" blendingMode="withinWindow" material="titlebar" state="followsWindowActiveState" translatesAutoresizingMaskIntoConstraints="NO" id="A0h-Wb-Ggw" customClass="MoverEffectView" customModule="Fluor" customModuleProvider="target">
+                            <customView wantsLayer="YES" translatesAutoresizingMaskIntoConstraints="NO" id="A0h-Wb-Ggw" customClass="MoverEffectView" customModule="Fluor" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="26"/>
                                 <subviews>
                                     <box verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="6ab-du-qF9">
@@ -240,7 +240,7 @@
                                     <constraint firstItem="ttC-Xk-L6o" firstAttribute="centerY" secondItem="A0h-Wb-Ggw" secondAttribute="centerY" id="pWI-kM-cA8"/>
                                     <constraint firstAttribute="height" constant="26" id="uXn-uY-ubk"/>
                                 </constraints>
-                            </visualEffectView>
+                            </customView>
                         </subviews>
                         <constraints>
                             <constraint firstItem="A0h-Wb-Ggw" firstAttribute="leading" secondItem="3sp-g2-HUP" secondAttribute="leading" id="8lN-bR-Bcw"/>

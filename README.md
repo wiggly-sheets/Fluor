@@ -81,7 +81,7 @@ Download the latest `Fluor.dmg` from [GitHub Releases](https://github.com/wiggly
 To build and install Fluor yourself, you need:
 
 - macOS 26 or later
-- Xcode 26
+- Xcode 27.2 or later
 - An Apple Silicon or Intel Mac
 
 Clone the repository, open the project, and run the **Fluor** scheme:

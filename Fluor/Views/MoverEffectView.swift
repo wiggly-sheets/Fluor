@@ -29,7 +29,52 @@
 
 import Cocoa
 
-class MoverEffectView: NSVisualEffectView {
+final class MoverEffectView: NSView {
+    private var glassView: NSGlassEffectView?
+
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        configureGlass()
+    }
+
+    override init(frame frameRect: NSRect) {
+        super.init(frame: frameRect)
+        configureGlass()
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
+
+    private func configureGlass() {
+        guard glassView == nil else { return }
+
+        let glassView = NSGlassEffectView()
+        glassView.style = .regular
+        glassView.cornerRadius = 12
+        glassView.translatesAutoresizingMaskIntoConstraints = false
+
+        if #available(macOS 27.0, *) {
+            glassView.effectIsInteractive = false
+        }
+
+        addSubview(glassView, positioned: .below, relativeTo: nil)
+
+        NSLayoutConstraint.activate([
+            glassView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            glassView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            glassView.topAnchor.constraint(equalTo: topAnchor),
+            glassView.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ])
+
+        self.glassView = glassView
+    }
+
+    override func hitTest(_ point: NSPoint) -> NSView? {
+        let hitView = super.hitTest(point)
+        return hitView === glassView ? self : hitView
+    }
+
     override func mouseDown(with event: NSEvent) {
         guard let window = self.window else { return }
         window.performDrag(with: event)

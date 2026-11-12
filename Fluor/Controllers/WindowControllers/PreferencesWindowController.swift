@@ -41,38 +41,11 @@ final class PreferencesWindowController: NSWindowController, StoryboardInstantia
         window.titlebarAppearsTransparent = true
         window.titleVisibility = .hidden
         window.isMovableByWindowBackground = true
-        window.backgroundColor = .clear
 
-        if let contentView = window.contentView {
-            contentView.wantsLayer = true
-            contentView.layer?.backgroundColor = NSColor.clear.cgColor
-        }
-
-        setupGlassToolbar()
+        window.toolbar?.allowsUserCustomization = false
 
         let toolbar = window.toolbar
         let insertionIndex = max(0, (toolbar?.items.count ?? 0) - 1)
         toolbar?.insertItem(withItemIdentifier: .flexibleSpace, at: insertionIndex)
-    }
-
-    private func setupGlassToolbar() {
-        guard let window = window, let toolbar = window.toolbar else { return }
-
-        toolbar.allowsUserCustomization = false
-
-        if let superview = toolbar.items.first?.view?.superview?.superview {
-            superview.wantsLayer = true
-            superview.layer?.backgroundColor = NSColor.clear.cgColor
-        }
-
-        for item in toolbar.items {
-            item.view?.wantsLayer = true
-            item.view?.layer?.backgroundColor = NSColor.clear.cgColor
-            if let button = item.view as? NSButton {
-                button.bezelStyle = .rounded
-                button.isBordered = false
-                button.contentTintColor = .labelColor
-            }
-        }
     }
 }
