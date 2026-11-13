@@ -12,7 +12,7 @@ permissions:
 jobs:
   build-and-test:
     name: Build and test
-    runs-on: macos-26
+    runs-on: xcode-27
     timeout-minutes: 30
 
     steps:
@@ -20,6 +20,23 @@ jobs:
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
+
+      - name: Select Xcode
+        run: |
+          xcode="$(find /Applications -maxdepth 1 -name 'Xcode_27*.app' -print 2>/dev/null | sort -V | tail -1)"
+          if [ -z "$xcode" ]; then
+            echo "::error::no Xcode 27 installation on this runner"
+            ls /Applications
+            exit 1
+          fi
+          sudo xcode-select -s "$xcode"
+          xcodebuild -version
+          sdk="$(xcrun --sdk macosx --show-sdk-version)"
+          echo "macOS SDK: $sdk"
+          case "$sdk" in
+            27.*) ;;
+            *) echo "::error::the macOS 27 SDK is required, found $sdk"; exit 1 ;;
+          esac
 
       - name: Install create-dmg
         run: brew install create-dmg
