@@ -2,12 +2,6 @@
 
 ## [Unreleased]
 
-## [2.8.1-rc.1] - 2026-11-13
-
-### Added
-
-- Release pipeline trial.
-
 <!-- pre-versioning -->
 
 ## 2.8.0 — 2026-10-20
