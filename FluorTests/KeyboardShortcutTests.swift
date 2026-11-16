@@ -20,7 +20,7 @@ final class KeyboardShortcutTests: XCTestCase {
         )
     }
 
-    func testMatchingRejectsRepeatsAndDifferentInput() {
+    func testMatchingRejectsRepeatsWrongKeyAndMissingModifiers() {
         let shortcut = KeyboardShortcut(keyCode: 3, modifiers: [.command, .shift])
 
         XCTAssertFalse(shortcut.matches(keyCode: 3, modifiers: [.command, .shift], isRepeat: true))

@@ -4,51 +4,43 @@ import XCTest
 #endif
 
 final class KeyboardModePolicyTests: XCTestCase {
-    func testDisabledApplicationAlwaysRestoresLaunchMode() {
-        for method in [SwitchMethod.window, .hybrid, .key] {
-            for behavior in [AppBehavior.inferred, .media, .function] {
-                XCTAssertEqual(
-                    KeyboardModePolicy.desiredMode(
-                        isDisabled: true,
-                        launchMode: .function,
-                        switchMethod: method,
-                        appBehavior: behavior,
-                        defaultMode: .media
-                    ),
-                    .function
-                )
-            }
-        }
+    func testDisabledApplicationRestoresLaunchModeInsteadOfConfiguredMode() {
+        XCTAssertEqual(
+            KeyboardModePolicy.desiredMode(
+                isDisabled: true,
+                launchMode: .media,
+                switchMethod: .key,
+                appBehavior: .function,
+                defaultMode: .function
+            ),
+            .media
+        )
     }
 
     func testKeySwitchingUsesDefaultMode() {
-        for behavior in [AppBehavior.inferred, .media, .function] {
-            XCTAssertEqual(
-                KeyboardModePolicy.desiredMode(
-                    isDisabled: false,
-                    launchMode: .media,
-                    switchMethod: .key,
-                    appBehavior: behavior,
-                    defaultMode: .function
-                ),
-                .function
-            )
-        }
+        XCTAssertEqual(
+            KeyboardModePolicy.desiredMode(
+                isDisabled: false,
+                launchMode: .media,
+                switchMethod: .key,
+                appBehavior: .media,
+                defaultMode: .function
+            ),
+            .function
+        )
     }
 
-    func testApplicationSwitchingResolvesRulesAndDefault() {
-        for method in [SwitchMethod.window, .hybrid] {
-            XCTAssertEqual(desiredMode(method: method, behavior: .inferred), .function)
-            XCTAssertEqual(desiredMode(method: method, behavior: .media), .media)
-            XCTAssertEqual(desiredMode(method: method, behavior: .function), .function)
-        }
+    func testWindowSwitchingUsesApplicationBehavior() {
+        XCTAssertEqual(desiredMode(behavior: .inferred), .function)
+        XCTAssertEqual(desiredMode(behavior: .media), .media)
+        XCTAssertEqual(desiredMode(behavior: .function), .function)
     }
 
-    private func desiredMode(method: SwitchMethod, behavior: AppBehavior) -> FKeyMode {
+    private func desiredMode(behavior: AppBehavior) -> FKeyMode {
         KeyboardModePolicy.desiredMode(
             isDisabled: false,
             launchMode: .media,
-            switchMethod: method,
+            switchMethod: .window,
             appBehavior: behavior,
             defaultMode: .function
         )

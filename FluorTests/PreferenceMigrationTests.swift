@@ -41,10 +41,11 @@ final class PreferenceMigrationTests: XCTestCase {
         XCTAssertEqual(values[SettingsKey.switchMethod] as? Int, SwitchMethod.hybrid.rawValue)
     }
 
-    func testLegacyDomainOrderIncludesBothHistoricalBundleIdentifiers() {
-        XCTAssertEqual(
-            PreferenceMigration.legacyDomainNames,
-            ["com.pyrolyse.FluorTahoe", "com.pyrolyse.Fluor"]
-        )
+    func testLegacyDomainsListNewestBundleFirst() {
+        let domains = PreferenceMigration.legacyDomainNames
+
+        XCTAssertEqual(domains.count, 2)
+        XCTAssertEqual(domains.first, "com.pyrolyse.FluorTahoe")
+        XCTAssertEqual(domains.last, "com.pyrolyse.Fluor")
     }
 }

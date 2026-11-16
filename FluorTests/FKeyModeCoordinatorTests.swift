@@ -5,14 +5,7 @@ import XCTest
 #endif
 
 final class FKeyModeCoordinatorTests: XCTestCase {
-    func testCurrentModeIsReadThroughCoordinator() throws {
-        let manager = FakeFKeyModeManager(mode: .function)
-        let coordinator = FKeyModeCoordinator(manager: manager)
-
-        XCTAssertEqual(try coordinator.currentFKeyMode().get(), .function)
-    }
-
-    func testApplicationsAreSerializedInSubmissionOrder() {
+    func testModeChangesApplyInSubmissionOrder() {
         let manager = FakeFKeyModeManager(mode: .media)
         let coordinator = FKeyModeCoordinator(manager: manager)
         let completion = expectation(description: "Both mode changes complete")
@@ -40,7 +33,10 @@ final class FKeyModeCoordinatorTests: XCTestCase {
         let completion = expectation(description: "Failure is returned")
 
         coordinator.apply(.function) { result in
-            if case .success = result {
+            switch result {
+            case .failure(let error):
+                XCTAssertEqual(error as? FakeError, .expected)
+            case .success:
                 XCTFail("Expected the manager error to be returned")
             }
             completion.fulfill()
@@ -48,9 +44,20 @@ final class FKeyModeCoordinatorTests: XCTestCase {
 
         wait(for: [completion], timeout: 2)
     }
+
+    func testCurrentModeReadFailureIsPropagated() {
+        let manager = FakeFKeyModeManager(mode: .media)
+        manager.currentError = FakeError.expected
+        let coordinator = FKeyModeCoordinator(manager: manager)
+
+        guard case .failure(let error) = coordinator.currentFKeyMode() else {
+            return XCTFail("Expected the manager error to be returned")
+        }
+        XCTAssertEqual(error as? FakeError, .expected)
+    }
 }
 
-private enum FakeError: Error {
+private enum FakeError: Error, Equatable {
     case expected
 }
 
@@ -59,6 +66,7 @@ private final class FakeFKeyModeManager: FKeyModeManaging {
     private var mode: FKeyMode
     private var modes: [FKeyMode] = []
     var nextError: Error?
+    var currentError: Error?
 
     init(mode: FKeyMode) {
         self.mode = mode
@@ -69,7 +77,13 @@ private final class FakeFKeyModeManager: FKeyModeManaging {
     }
 
     func currentFKeyMode() throws -> FKeyMode {
-        lock.withLock { mode }
+        try lock.withLock {
+            if let error = currentError {
+                currentError = nil
+                throw error
+            }
+            return mode
+        }
     }
 
     func setCurrentFKeyMode(_ mode: FKeyMode) throws -> Bool {

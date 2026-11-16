@@ -24,11 +24,13 @@ final class AppSettingsTests: XCTestCase {
 
     func testStoredDefaultUsesFallbackAndPersistsChanges() {
         let setting = StoredDefault("TestValue", default: true, defaults: defaults)
-
         XCTAssertTrue(setting.wrappedValue)
+
         setting.wrappedValue = false
+
         XCTAssertFalse(setting.wrappedValue)
-        XCTAssertEqual(defaults.object(forKey: "TestValue") as? Bool, false)
+        let reloaded = StoredDefault("TestValue", default: true, defaults: defaults)
+        XCTAssertFalse(reloaded.wrappedValue)
     }
 
     func testStoredRawDefaultRejectsUnknownRawValues() {
