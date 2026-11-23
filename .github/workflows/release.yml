@@ -73,7 +73,7 @@ jobs:
           VERSION: ${{ steps.version.outputs.version }}
         run: make release-artifacts VERSION="$VERSION"
 
-      - name: Verify the bundle
+      - name: Verify both bundles
         env:
           VERSION: ${{ steps.version.outputs.version }}
         run: make verify VERSION="$VERSION"
@@ -101,7 +101,8 @@ jobs:
           body_path: release-notes.md
           prerelease: ${{ contains(github.ref_name, '-') }}
           files: |
-            release/Fluor.dmg
+            release/Fluor-${{ steps.version.outputs.version }}-arm64.dmg
+            release/Fluor-${{ steps.version.outputs.version }}-x86_64.dmg
             release/checksums.txt
             release-notes.md
           fail_on_unmatched_files: true

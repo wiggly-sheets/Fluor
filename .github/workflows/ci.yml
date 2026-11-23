@@ -47,22 +47,12 @@ jobs:
       - name: Run the test suite
         run: make test
 
-      - name: Build the shipping bundle
+      # app builds the arm64 and the x86_64 bundle; verify checks each architecture.
+      - name: Build both shipping bundles
         run: make app VERSION=0.0.0-ci
 
-      - name: Verify the bundle
+      - name: Verify both bundles
         run: make verify VERSION=0.0.0-ci
-
-      - name: Build the Intel bundle and check the architecture
-        run: |
-          set -euo pipefail
-          make app-intel VERSION=0.0.0-ci
-          archs=$(lipo -archs dist/Fluor-x86_64.app/Contents/MacOS/Fluor)
-          echo "lipo -archs: $archs"
-          if [ "$archs" != "x86_64" ]; then
-            echo "::error::the Intel bundle should hold an x86_64 binary, but it holds $archs"
-            exit 1
-          fi
 
       # release-artifacts writes the checksum file and verifies it.
       - name: Build the release artifacts

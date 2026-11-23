@@ -74,7 +74,7 @@ The configurable global shortcut requires **Accessibility** permission. Open **S
 
 ## Install
 
-Download the latest `Fluor.dmg` from [GitHub Releases](https://github.com/wiggly-sheets/fluor/releases/latest), open it, and drag Fluor to Applications. The current community build is ad-hoc signed rather than notarized, so on first launch you may need to Control-click Fluor in Finder and choose **Open**.
+Download the latest disk image from [GitHub Releases](https://github.com/wiggly-sheets/fluor/releases/latest): `Fluor-<version>-arm64.dmg` for Apple silicon or `Fluor-<version>-x86_64.dmg` for Intel. Open it and drag Fluor to Applications. Each release also publishes `checksums.txt`, so you can check a download with `shasum -a 256 -c checksums.txt`. The current community build is ad-hoc signed rather than notarized, so on first launch you may need to Control-click Fluor in Finder and choose **Open**.
 
 ## Build and install from source
 
@@ -111,13 +111,13 @@ make build             # debug build of the package
 make test              # changelog check and the test suite
 make verify            # check architecture, version and signature
 make run               # install into ~/Applications and launch
-make app               # build dist/Fluor.app
-make dmg               # build release/Fluor.dmg
-make release-artifacts # build the disk image and its verified checksums file
+make app               # build dist/Fluor-arm64.app and dist/Fluor-x86_64.app
+make dmg               # build both disk images under release/
+make release-artifacts # build both disk images and their verified checksums file
 make release-notes VERSION=2.8.0  # preview the changelog section
 ```
 
-The app and the disk image are built with Xcode, because Xcode compiles the storyboards, the xib files, the asset catalog and the app icon, and the app looks its resources up in the main bundle. `make release VERSION=2.8.0` moves `[Unreleased]` to that version, runs the tests, builds and verifies the artifacts, commits the changelog bump and creates the tag locally, then prints the commands that push the commit and the tag.
+The release publishes one disk image per architecture, `release/Fluor-<version>-arm64.dmg` and `release/Fluor-<version>-x86_64.dmg`, with one `release/checksums.txt`. The app and the disk images are built with Xcode, because Xcode compiles the storyboards, the xib files, the asset catalog and the app icon, and the app looks its resources up in the main bundle. `make release VERSION=2.8.0` moves `[Unreleased]` to that version, runs the tests, builds and verifies the artifacts, commits the changelog bump and creates the tag locally, then prints the commands that push the commit and the tag.
 
 The release workflow runs the test suite first, so a failing test blocks a release.
 

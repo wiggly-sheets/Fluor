@@ -22,15 +22,21 @@ ROOT := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 DERIVED_DATA := $(ROOT)/$(BUILD_DIR)/DerivedData
 DMG_STAGE    := $(ROOT)/$(BUILD_DIR)/dmg-stage
 
-DIST_APP       := $(ROOT)/$(DIST_DIR)/$(APP_NAME).app
 DIST_APP_ARM   := $(ROOT)/$(DIST_DIR)/$(APP_NAME)-arm64.app
 DIST_APP_INTEL := $(ROOT)/$(DIST_DIR)/$(APP_NAME)-x86_64.app
 DIST_APP_UNIV  := $(ROOT)/$(DIST_DIR)/$(APP_NAME)-universal.app
 
-DMG      := $(ROOT)/$(RELEASE_DIR)/$(APP_NAME).dmg
-DMG_ARM  := $(ROOT)/$(RELEASE_DIR)/$(APP_NAME)-arm64.dmg
-DMG_INTEL := $(ROOT)/$(RELEASE_DIR)/$(APP_NAME)-x86_64.dmg
-DMG_UNIV := $(ROOT)/$(RELEASE_DIR)/$(APP_NAME)-universal.dmg
+# The host bundle for install and run, picked by the architecture of this Mac.
+HOST_MACHINE := $(shell uname -m)
+ifeq ($(HOST_MACHINE),arm64)
+HOST_SET      := arm64
+HOST_ARCHS    := arm64
+DIST_APP_HOST := $(DIST_APP_ARM)
+else
+HOST_SET      := x86_64
+HOST_ARCHS    := x86_64
+DIST_APP_HOST := $(DIST_APP_INTEL)
+endif
 
 # The version comes from the command line: `make release VERSION=2.8.0`.
 VERSION ?=
@@ -49,7 +55,14 @@ BUILD_NUMBER  :=
 VERSION_FLAGS :=
 endif
 
-.PHONY: help build test verify run install app app-arm app-intel app-universal \
+# A disk image carries the version when one is given, so a release writes
+# Fluor-<version>-arm64.dmg and Fluor-<version>-x86_64.dmg.
+DMG_TAG  := $(if $(strip $(VERSION)),-$(strip $(VERSION)),)
+DMG_ARM   := $(ROOT)/$(RELEASE_DIR)/$(APP_NAME)$(DMG_TAG)-arm64.dmg
+DMG_INTEL := $(ROOT)/$(RELEASE_DIR)/$(APP_NAME)$(DMG_TAG)-x86_64.dmg
+DMG_UNIV  := $(ROOT)/$(RELEASE_DIR)/$(APP_NAME)-universal.dmg
+
+.PHONY: help build test verify run install app app-arm app-intel app-host app-universal \
 	dmg dmg-arm dmg-intel dmg-universal release-artifacts release-notes release clean
 
 .DEFAULT_GOAL := help
@@ -63,18 +76,21 @@ help:
 		'  help                 List every target (default).' \
 		'  build                Debug build of the SwiftPM package.' \
 		'  test                 Run the changelog check and the SwiftPM test suite.' \
-		'  verify               Check the bundle: architecture, version and signature.' \
-		'  run                  Install the app bundle into ~/Applications and launch it.' \
-		'  install              Copy the app bundle into ~/Applications.' \
-		'  app                  Build the shipping bundle into dist/Fluor.app.' \
-		'  app-arm              Build an arm64 bundle into dist/Fluor-arm64.app.' \
-		'  app-intel            Build an x86_64 bundle into dist/Fluor-x86_64.app.' \
+		'  verify               Check both bundles: architecture, version and signature.' \
+		'  run                  Install the bundle of this Mac into ~/Applications and launch it.' \
+		'  install              Copy the bundle of this Mac into ~/Applications.' \
+		'  app                  Build both shipping bundles into dist/Fluor-arm64.app and' \
+		'                       dist/Fluor-x86_64.app.' \
+		'  app-arm              Build the arm64 bundle into dist/Fluor-arm64.app.' \
+		'  app-intel            Build the x86_64 bundle into dist/Fluor-x86_64.app.' \
+		'  app-host             Build the bundle of this Mac only.' \
 		'  app-universal        Build a bundle with both architectures into dist/Fluor-universal.app.' \
-		'  dmg                  Build the disk image release/Fluor.dmg from dist/Fluor.app.' \
-		'  dmg-arm              Build release/Fluor-arm64.dmg from the arm64 bundle.' \
-		'  dmg-intel            Build release/Fluor-x86_64.dmg from the x86_64 bundle.' \
+		'  dmg                  Build both disk images, Fluor-<version>-arm64.dmg and' \
+		'                       Fluor-<version>-x86_64.dmg, under release/.' \
+		'  dmg-arm              Build the arm64 disk image from the arm64 bundle.' \
+		'  dmg-intel            Build the x86_64 disk image from the x86_64 bundle.' \
 		'  dmg-universal        Build release/Fluor-universal.dmg from the universal bundle.' \
-		'  release-artifacts    Build the DMG and release/checksums.txt, then verify the checksum.' \
+		'  release-artifacts    Build both disk images and release/checksums.txt, then verify it.' \
 		'  release-notes VERSION=x.y.z  Print the changelog section of a version.' \
 		'  release VERSION=x.y.z  Bump the changelog, test, build, verify, commit and tag.' \
 		'  clean                Remove .build/, build/, dist/ and release/.' \
@@ -85,8 +101,11 @@ help:
 		'  storyboards, the xib files, the asset catalog and the Icon Composer icon,' \
 		'  and the app looks its resources up in the main bundle. `swift build` alone' \
 		'  produces a bare executable without resources.' \
-		'  Fluor builds for Apple silicon (arm64) and for Intel (x86_64). The shipping' \
-		'  bundle dist/Fluor.app is universal.' \
+		'  Fluor builds one bundle per architecture for Apple silicon (arm64) and for' \
+		'  Intel (x86_64): dist/Fluor-arm64.app and dist/Fluor-x86_64.app. A release' \
+		'  publishes both disk images with one release/checksums.txt. A disk image' \
+		'  carries the version when one is given: make dmg VERSION=2.8.0 writes' \
+		'  release/Fluor-2.8.0-arm64.dmg and release/Fluor-2.8.0-x86_64.dmg.' \
 		'  Signing stays ad-hoc, as it is today: CODE_SIGN_STYLE = Manual and' \
 		'  CODE_SIGN_IDENTITY = "-". There is no Developer ID identity and no' \
 		'  notarization.' \
@@ -108,39 +127,27 @@ test:
 	cd "$(ROOT)" && ./scripts/changelog.sh check
 	cd "$(ROOT)" && swift test
 
-## verify — check the built bundle
+## verify — check the built bundles
 
 verify:
-	@test -d "$(DIST_APP)" || { \
-		echo "error: $(DIST_APP) is missing. Run make app first."; \
+	@test -d "$(DIST_APP_ARM)" || { \
+		echo "error: $(DIST_APP_ARM) is missing. Run make app first."; \
 		exit 1; \
 	}
-	@binary="$(DIST_APP)/Contents/MacOS/$(APP_NAME)"; \
-	archs="$$(lipo -archs "$$binary" | tr ' ' '\n' | sort | tr '\n' ' ' | xargs)"; \
-	echo "Architectures: $$archs"; \
-	test "$$archs" = "arm64 x86_64" || { \
-		echo "error: expected a universal binary, got [$$archs]."; \
+	@test -d "$(DIST_APP_INTEL)" || { \
+		echo "error: $(DIST_APP_INTEL) is missing. Run make app first."; \
 		exit 1; \
 	}
-	@if [ -n "$(strip $(VERSION))" ]; then \
-		version="$$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$(DIST_APP)/Contents/Info.plist")"; \
-		echo "Bundle version: $$version (expected $(VERSION))"; \
-		test "$$version" = "$(VERSION)" || { \
-			echo "error: the bundle reports $$version, but $(VERSION) was expected."; \
-			exit 1; \
-		}; \
-	else \
-		echo "Bundle version: $$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$(DIST_APP)/Contents/Info.plist") (no VERSION given)"; \
-	fi
-	codesign --verify --deep --strict "$(DIST_APP)"
-	@echo "Verified $(DIST_APP)."
+	$(call check_bundle,$(DIST_APP_ARM),arm64)
+	$(call check_bundle,$(DIST_APP_INTEL),x86_64)
+	@echo "Verified $(DIST_APP_ARM) and $(DIST_APP_INTEL)."
 
-## install — copy the bundle into ~/Applications
+## install — copy the bundle of this Mac into ~/Applications
 
-install: app
+install: app-host
 	mkdir -p "$(INSTALL_DIR)"
 	rm -rf "$(INSTALL_APP)"
-	ditto "$(DIST_APP)" "$(INSTALL_APP)"
+	ditto "$(DIST_APP_HOST)" "$(INSTALL_APP)"
 	@echo "Installed $(INSTALL_APP)"
 
 ## run — install the bundle and launch it
@@ -148,10 +155,9 @@ install: app
 run: install
 	open "$(INSTALL_APP)"
 
-## app — the bundle the product ships
+## app — the two bundles the product ships
 
-app:
-	$(call build_bundle,universal,arm64 x86_64,$(DIST_APP))
+app: app-arm app-intel
 
 app-arm:
 	$(call build_bundle,arm64,arm64,$(DIST_APP_ARM))
@@ -159,13 +165,15 @@ app-arm:
 app-intel:
 	$(call build_bundle,x86_64,x86_64,$(DIST_APP_INTEL))
 
+app-host:
+	$(call build_bundle,$(HOST_SET),$(HOST_ARCHS),$(DIST_APP_HOST))
+
 app-universal:
 	$(call build_bundle,universal,arm64 x86_64,$(DIST_APP_UNIV))
 
-## dmg — the disk image
+## dmg — the two disk images the release publishes
 
-dmg: app
-	$(call package_dmg,$(DIST_APP),$(DMG))
+dmg: dmg-arm dmg-intel
 
 dmg-arm: app-arm
 	$(call package_dmg,$(DIST_APP_ARM),$(DMG_ARM))
@@ -176,10 +184,11 @@ dmg-intel: app-intel
 dmg-universal: app-universal
 	$(call package_dmg,$(DIST_APP_UNIV),$(DMG_UNIV))
 
-## release-artifacts — the DMG and the sidecar the tap expects
+## release-artifacts — the disk images and the checksum file the release publishes
 
 release-artifacts: dmg
-	@cd "$(ROOT)/$(RELEASE_DIR)" && shasum -a 256 "$(APP_NAME).dmg" > checksums.txt
+	@cd "$(ROOT)/$(RELEASE_DIR)" && rm -f checksums.txt
+	@cd "$(ROOT)/$(RELEASE_DIR)" && shasum -a 256 "$(notdir $(DMG_ARM))" "$(notdir $(DMG_INTEL))" > checksums.txt
 	@cd "$(ROOT)/$(RELEASE_DIR)" && shasum -a 256 -c checksums.txt
 	@echo "$(RELEASE_DIR)/checksums.txt:"
 	@cat "$(ROOT)/$(RELEASE_DIR)/checksums.txt"
@@ -207,6 +216,28 @@ release:
 clean:
 	rm -rf "$(ROOT)/$(SPM_DIR)" "$(ROOT)/$(BUILD_DIR)" "$(ROOT)/$(DIST_DIR)" "$(ROOT)/$(RELEASE_DIR)"
 	@echo "Removed $(SPM_DIR)/, $(BUILD_DIR)/, $(DIST_DIR)/ and $(RELEASE_DIR)/."
+
+# $(1) bundle, $(2) the architecture that bundle must hold
+define check_bundle
+	@binary="$(1)/Contents/MacOS/$(APP_NAME)"; \
+	archs="$$(lipo -archs "$$binary" | tr ' ' '\n' | sort | tr '\n' ' ' | xargs)"; \
+	echo "$(1): $$archs"; \
+	test "$$archs" = "$(2)" || { \
+		echo "error: $(1) should hold $(2), but it holds [$$archs]."; \
+		exit 1; \
+	}
+	@if [ -n "$(strip $(VERSION))" ]; then \
+		version="$$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$(1)/Contents/Info.plist")"; \
+		echo "Bundle version: $$version (expected $(VERSION))"; \
+		test "$$version" = "$(VERSION)" || { \
+			echo "error: the bundle reports $$version, but $(VERSION) was expected."; \
+			exit 1; \
+		}; \
+	else \
+		echo "Bundle version: $$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$(1)/Contents/Info.plist") (no VERSION given)"; \
+	fi
+	codesign --verify --deep --strict "$(1)"
+endef
 
 # $(1) name of the architecture set, $(2) ARCHS for xcodebuild, $(3) destination bundle
 define build_bundle
