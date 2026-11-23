@@ -53,6 +53,13 @@ final class UserNotificationEnablementViewController: NSViewController, Storyboa
         everytime || activeAppSwitch || activeAppFnKey || globalFnKey
     }
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // Auto Layout sizes the row stacks inconsistently; pin them to one row height.
+        let rows = (view.subviews.first as? NSStackView)?.arrangedSubviews.compactMap { $0 as? NSStackView } ?? []
+        rows.forEach { $0.heightAnchor.constraint(equalToConstant: 20).isActive = true }
+    }
+
     override func viewWillAppear() {
         self.adaptStackConstraints()
         guard !isShownInAlert, AppManager.default.userNotificationEnablement != .none else {

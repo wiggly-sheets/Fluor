@@ -37,7 +37,6 @@ final class PreferencesWindowController: NSWindowController, StoryboardInstantia
 
         guard let window = window else { return }
 
-        window.styleMask.insert(.fullSizeContentView)
         window.titlebarAppearsTransparent = true
         window.titleVisibility = .hidden
         window.isMovableByWindowBackground = true
@@ -47,5 +46,7 @@ final class PreferencesWindowController: NSWindowController, StoryboardInstantia
         let toolbar = window.toolbar
         let insertionIndex = max(0, (toolbar?.items.count ?? 0) - 1)
         toolbar?.insertItem(withItemIdentifier: .flexibleSpace, at: insertionIndex)
+
+        window.center()
     }
 }
