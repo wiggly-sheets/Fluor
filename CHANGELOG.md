@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Changed
+
+- The release publishes one disk image per architecture, `Fluor-<version>-arm64.dmg` and `Fluor-<version>-x86_64.dmg`, with `checksums.txt`.
+
 ## [2.8.0] - 2026-11-23
 
 ### Added
