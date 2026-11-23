@@ -222,6 +222,47 @@
                                             <real value="3.4028234663852886e+38"/>
                                         </customSpacing>
                                     </stackView>
+                                    <stackView distribution="fill" orientation="horizontal" alignment="centerY" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="750" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MBH-ROW">
+                                        <rect key="frame" x="0.0" y="0.0" width="330" height="21"/>
+                                        <subviews>
+                                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="MBH-CHK">
+                                                <rect key="frame" x="-2" y="-2" width="168" height="25"/>
+                                                <buttonCell key="cell" type="check" title="Hide menu bar icon" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="MBH-CELL">
+                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                    <font key="font" metaFont="system"/>
+                                                </buttonCell>
+                                                <connections>
+                                                    <binding destination="XlE-y8-iHG" name="value" keyPath="values.HideMenuBarItem" id="MBH-BIND"/>
+                                                </connections>
+                                            </button>
+                                            <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="MBH-POP">
+                                                <rect key="frame" x="170" y="-2" width="160" height="25"/>
+                                                <popUpButtonCell key="cell" type="push" title="Always" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="MBH-ITEM0" id="MBH-POPCELL">
+                                                    <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                                    <font key="font" metaFont="menu"/>
+                                                    <menu key="menu" id="MBH-MENU">
+                                                        <items>
+                                                            <menuItem title="Always" state="on" id="MBH-ITEM0"/>
+                                                            <menuItem title="Media keys mode" id="MBH-ITEM1"/>
+                                                            <menuItem title="Function keys mode" id="MBH-ITEM2"/>
+                                                        </items>
+                                                    </menu>
+                                                </popUpButtonCell>
+                                                <connections>
+                                                    <binding destination="XlE-y8-iHG" name="selectedIndex" keyPath="values.HideMenuBarItemMode" id="MBH-IDXBIND"/>
+                                                    <binding destination="XlE-y8-iHG" name="enabled" keyPath="values.HideMenuBarItem" id="MBH-ENBIND"/>
+                                                </connections>
+                                            </popUpButton>
+                                        </subviews>
+                                        <visibilityPriorities>
+                                            <integer value="1000"/>
+                                            <integer value="1000"/>
+                                        </visibilityPriorities>
+                                        <customSpacing>
+                                            <real value="3.4028234663852886e+38"/>
+                                            <real value="3.4028234663852886e+38"/>
+                                        </customSpacing>
+                                    </stackView>
                                 </subviews>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="500" id="i9k-27-o1N"/>

@@ -81,9 +81,17 @@ class AppManager: BehaviorDidChangePoster {
     @StoredDefault(SettingsKey.hideMenuBarItem, default: false)
     var hideMenuBarItem: Bool
 
+    @StoredRawDefault(SettingsKey.hideMenuBarItemMode, default: .always)
+    var hideMenuBarItemMode: MenuBarItemHidingMode
+
     @StoredDefault(SettingsKey.toggleShortcutEnabled, default: true)
     var toggleShortcutEnabled: Bool
     
+    func hidesMenuBarItem(for mode: FKeyMode) -> Bool {
+        guard hideMenuBarItem else { return false }
+        return hideMenuBarItemMode.hides(for: mode)
+    }
+
     var rules: Set<Rule> {
         Set(ruleRegistry.records.map { Rule(record: $0) })
     }

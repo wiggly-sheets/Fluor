@@ -58,6 +58,34 @@ import Foundation
     }
 }
 
+@objc enum MenuBarItemHidingMode: Int {
+    case always = 0
+    case media
+    case function
+
+    var label: String {
+        switch self {
+        case .always:
+            return NSLocalizedString("Always", comment: "")
+        case .media:
+            return NSLocalizedString("Media keys mode", comment: "")
+        case .function:
+            return NSLocalizedString("Function keys mode", comment: "")
+        }
+    }
+
+    func hides(for mode: FKeyMode) -> Bool {
+        switch self {
+        case .always:
+            return true
+        case .media:
+            return mode == .media
+        case .function:
+            return mode == .function
+        }
+    }
+}
+
 @objc enum AppBehavior: Int {
     case inferred = 0
     case media

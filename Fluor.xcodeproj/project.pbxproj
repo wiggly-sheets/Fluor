@@ -71,6 +71,7 @@
 		F10C00240000000000000001 /* PreferenceMigrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10C00140000000000000001 /* PreferenceMigrationTests.swift */; };
 		F10C00250000000000000001 /* RuleRegistryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10C00150000000000000001 /* RuleRegistryTests.swift */; };
 		F10C00260000000000000001 /* UserNotificationEnablementTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10C00160000000000000001 /* UserNotificationEnablementTests.swift */; };
+		F10C00270000000000000001 /* MenuBarItemHidingModeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10C00170000000000000001 /* MenuBarItemHidingModeTests.swift */; };
 		F10C00300000000000000001 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10A00080000000000000001 /* AppSettings.swift */; };
 		F10C00310000000000000001 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FC44EF91D7F169A0065D433 /* Enums.swift */; };
 		F10C00320000000000000001 /* KeyboardModePolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10B00020000000000000001 /* KeyboardModePolicy.swift */; };
@@ -165,6 +166,7 @@
 		F10C00140000000000000001 /* PreferenceMigrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceMigrationTests.swift; sourceTree = "<group>"; };
 		F10C00150000000000000001 /* RuleRegistryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuleRegistryTests.swift; sourceTree = "<group>"; };
 		F10C00160000000000000001 /* UserNotificationEnablementTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserNotificationEnablementTests.swift; sourceTree = "<group>"; };
+		F10C00170000000000000001 /* MenuBarItemHidingModeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarItemHidingModeTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -360,6 +362,7 @@
 				F10C00140000000000000001 /* PreferenceMigrationTests.swift */,
 				F10C00150000000000000001 /* RuleRegistryTests.swift */,
 				F10C00160000000000000001 /* UserNotificationEnablementTests.swift */,
+				F10C00170000000000000001 /* MenuBarItemHidingModeTests.swift */,
 			);
 			path = FluorTests;
 			sourceTree = "<group>";
@@ -549,6 +552,7 @@
 				F10C00240000000000000001 /* PreferenceMigrationTests.swift in Sources */,
 				F10C00250000000000000001 /* RuleRegistryTests.swift in Sources */,
 				F10C00260000000000000001 /* UserNotificationEnablementTests.swift in Sources */,
+				F10C00270000000000000001 /* MenuBarItemHidingModeTests.swift in Sources */,
 				F10C00300000000000000001 /* AppSettings.swift in Sources */,
 				F10C00310000000000000001 /* Enums.swift in Sources */,
 				F10C00320000000000000001 /* KeyboardModePolicy.swift in Sources */,

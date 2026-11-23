@@ -20,6 +20,7 @@ enum SettingsKey {
     static let toggleShortcutDisplay = "ToggleShortcutDisplay"
     static let migratedLegacyPreferencesV2 = "MigratedLegacyPreferencesV2"
     static let hideMenuBarItem = "HideMenuBarItem"
+    static let hideMenuBarItemMode = "HideMenuBarItemMode"
     static let toggleShortcutEnabled = "ToggleShortcutEnabled"
 }
 

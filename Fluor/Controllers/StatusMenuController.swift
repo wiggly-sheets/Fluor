@@ -78,7 +78,7 @@ class StatusMenuController: NSObject, NSMenuDelegate, NSWindowDelegate, MenuCont
         switch keyPath {
         case SettingsKey.useLightIcon?:
             adaptStatusMenuIcon()
-        case SettingsKey.hideMenuBarItem?:
+        case SettingsKey.hideMenuBarItem?, SettingsKey.hideMenuBarItemMode?:
             applyMenuBarVisibility()
         default:
             return
@@ -89,13 +89,13 @@ class StatusMenuController: NSObject, NSMenuDelegate, NSWindowDelegate, MenuCont
         applicationIsEnabled = !AppManager.default.isDisabled
         self.statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         self.statusItem.autosaveName = "FluorStatusItem"
-        self.statusItem.isVisible = !AppManager.default.hideMenuBarItem
         self.statusItem.menu = statusMenu
+        applyMenuBarVisibility()
         adaptStatusMenuIcon()
     }
 
     private func applyMenuBarVisibility() {
-        statusItem.isVisible = !AppManager.default.hideMenuBarItem
+        statusItem.isVisible = !AppManager.default.hidesMenuBarItem(for: displayedMode)
     }
     
     func setStatusImage(_ image: NSImage) {
@@ -107,6 +107,7 @@ class StatusMenuController: NSObject, NSMenuDelegate, NSWindowDelegate, MenuCont
         displayedMode = mode
         self.applicationIsEnabled = applicationIsEnabled
         adaptStatusMenuIcon()
+        applyMenuBarVisibility()
     }
 
     private func adaptStatusMenuIcon() {
@@ -146,10 +147,12 @@ class StatusMenuController: NSObject, NSMenuDelegate, NSWindowDelegate, MenuCont
 
     private func startObservingMenuBarVisibility() {
         UserDefaults.standard.addObserver(self, forKeyPath: SettingsKey.hideMenuBarItem, options: [], context: nil)
+        UserDefaults.standard.addObserver(self, forKeyPath: SettingsKey.hideMenuBarItemMode, options: [], context: nil)
     }
 
     private func stopObservingMenuBarVisibility() {
         UserDefaults.standard.removeObserver(self, forKeyPath: SettingsKey.hideMenuBarItem, context: nil)
+        UserDefaults.standard.removeObserver(self, forKeyPath: SettingsKey.hideMenuBarItemMode, context: nil)
     }
     
     
