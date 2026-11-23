@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [2.8.0] - 2026-11-23
+
 ### Added
 
 - Hide the menu bar icon in a chosen keyboard mode.
