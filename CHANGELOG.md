@@ -2,11 +2,19 @@
 
 ## [Unreleased]
 
-<!-- pre-versioning -->
+### Added
 
-## 2.8.0 — 2026-10-20
+- Hide the menu bar icon in a chosen keyboard mode.
+
+### Changed
 
 - Run the test suite in the release workflow before it builds the artifacts, so a failing test blocks the release.
+
+### Fixed
+
+- Stop the Settings toolbar from overlapping pane content and space notification rows evenly.
+
+<!-- pre-versioning -->
 
 ## 2.7.0 — 2026-08-15
 
